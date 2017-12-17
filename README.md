@@ -5,7 +5,11 @@ from linq.core.collections import Generator as MGenerator
 from linq.core.flow import Flow
 import linq.standard  # see the standard library to get all the extension methods.
 
-seq = Flow(MGenerator(lambda x: x + 1, 0))  # [0..\infty]
+seq = Flow(MGenerator(lambda x: x + 1, start_elem=0))  # [0..\infty]
+# See the definition of MGenerator at https://github.com/thautwarm/ActualFn.py/blob/master/linq/core/collections.py.
+# It's a generalization of PyGenerator.
+# What's more, it can be deepcopid and serialized!
+
 
 """
 First Example:
@@ -91,32 +95,38 @@ print(seq.Take(10).Zip(seq.Take(10)).ToDict().ToTupleGenerator())
 2.55 ms ± 49.1 µs per loop (mean ± std. dev. of 7 runs, 100 loops each) 
 ```
 
+## Extension Method
+How to write extension method for specific class or for all the classes? Here you are:
 ```python
 
 from core.flow import Flow, extension_std, extension_class
 
-@extension_std  # extension method for the standard(class object) 
+@extension_std  # extension method for the standard(class object, all the classes in Python) 
 def Sum(self: Flow, f=None):
     if f is None:
-        return sum(self.stream)
+        return Flow(sum(self.stream))
     else:
-        return sum(map(f, self.stream))
+        return Flow(sum(map(f, self.stream)))
+
+# If you want to support parameter destruct, do as the following:
+from linq.core.utils import is_single_param, destruct_func
+@extension_std
+def Sum(self: Flow, f=None)
+    if f is None:
+        return Flow(sum(self.stream))
+    else:
+        if not is_single_param(f): # if function `f` takes more than one params, we destruct it!
+            f = destruct_func(f)
+        return Flow(sum(map(f, self.stream)))
+        # Now, `Flow([(1, 2), (2, 3)]).Sum(lambda a, b: a*b)` is welcome!
+        
 
 @extension_class(list)  # extension method for class list 
-def Extend(self: Flow, other):
-    if self.stream is None:
-        self.stream = other
-    else:
-        self.stream.extend(other)
-    return self
+def Reversed(self: Flow):
+    return Flow(self.stream[::-1])
+    # Now, you can write `Flow([1, 2, 3]).Reversed()`!
 
-seq = Flow([1,2,3])
-print(seq.Sum())
 
-set_ = Flow(set(range(100000)))
-print(set_.Sum())
-
-seq.Extend([4, 5, 6, 7]).Sum(lambda x: x*2)
 ```
 
 ---------
