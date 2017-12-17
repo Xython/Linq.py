@@ -2,7 +2,11 @@ from linq.core.collections import Generator as MGenerator
 from linq.core.flow import Flow
 import linq.standard  # see the standard library to get all the extension methods.
 
-seq = Flow(MGenerator(lambda x: x + 1, 0))  # [0..\infty]
+seq = Flow(MGenerator(lambda x: x + 1, start_elem=0))  # [0..\infty]
+# See the definition of MGenerator at https://github.com/thautwarm/ActualFn.py/blob/master/linq/core/collections.py.
+# It's a generalization of PyGenerator.
+# What's more, it can be deepcopid and serialized!
+
 
 """
 First Example:
