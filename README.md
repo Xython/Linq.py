@@ -1,3 +1,5 @@
+# Linq(Language Integrated Query)
+Like C# in some degree, but not the same.
 ```python
 from linq.core.collections import Generator as MGenerator
 from linq.core.flow import Flow
@@ -116,3 +118,6 @@ print(set_.Sum())
 
 seq.Extend([4, 5, 6, 7]).Sum(lambda x: x*2)
 ```
+
+---------
+To Be Continue.
