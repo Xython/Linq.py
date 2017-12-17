@@ -1,4 +1,3 @@
-```python
 from linq.core.collections import Generator as MGenerator
 from linq.core.flow import Flow
 import linq.standard  # see the standard library to get all the extension methods.
@@ -72,47 +71,3 @@ except Exception as e:
  NameError: No extension method named `ToTupleGenerator` for builtins.object.
 """
 print(seq.Take(10).Zip(seq.Take(10)).ToDict().ToTupleGenerator())
-
-```
-
-```python
-%timeit sum(set_.stream)
-2.7 ms ± 127 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
- 
-%timeit set_.Sum()
-2.67 ms ± 137 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
-
-%timeit sum(set_.stream)
-2.5 ms ± 67.3 µs per loop (mean ± std. dev. of 7 runs, 100 loops each) 
-
-%timeit set_.Sum()
-2.55 ms ± 49.1 µs per loop (mean ± std. dev. of 7 runs, 100 loops each) 
-```
-
-```python
-
-from core.flow import Flow, extension_std, extension_class
-
-@extension_std  # extension method for the standard(class object) 
-def Sum(self: Flow, f=None):
-    if f is None:
-        return sum(self.stream)
-    else:
-        return sum(map(f, self.stream))
-
-@extension_class(list)  # extension method for class list 
-def Extend(self: Flow, other):
-    if self.stream is None:
-        self.stream = other
-    else:
-        self.stream.extend(other)
-    return self
-
-seq = Flow([1,2,3])
-print(seq.Sum())
-
-set_ = Flow(set(range(100000)))
-print(set_.Sum())
-
-seq.Extend([4, 5, 6, 7]).Sum(lambda x: x*2)
-```
