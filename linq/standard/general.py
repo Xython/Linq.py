@@ -21,7 +21,7 @@ def Unboxed(self: Flow):
 
 
 @extension_std
-def Sum(self: Flow, f=None):
+def Sum(self: Flow, f=None, destruct_f=False):
     if f is None:
         return Flow(sum(self.stream))
     else:

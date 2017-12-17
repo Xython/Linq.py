@@ -9,6 +9,8 @@ def concat_generator(*generators):
 def is_single_param(f):
     if not callable(f):
         raise TypeError('Not callable argument!')
+    if not is_lambda(f):
+        return True
     try:
         arg_info = inspect.getfullargspec(f)
     except TypeError:
@@ -20,6 +22,13 @@ def is_single_param(f):
     if n is 0:
         raise ReferenceError('Function can not be with zero parameter.')
     return n is 1
+
+
+__lambda_name__ = '<lambda>'
+
+
+def is_lambda(f):
+    return f.__name__ == __lambda_name__
 
 
 def destruct_func(f):
