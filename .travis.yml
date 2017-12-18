@@ -6,4 +6,4 @@ python:
   - "3.6-dev"
   - "3.7-dev"
 script:
-  - python tests.py
+  - python test.py
