@@ -1,5 +1,5 @@
 # Linq.py 
-[![Build Status](https://travis-ci.org/thautwarm/ActualFn.py.svg?branch=master)](https://travis-ci.org/thautwarm/Linq.py)
+[![Build Status](https://travis-ci.org/thautwarm/Linq.py.svg?branch=master)](https://travis-ci.org/thautwarm/Linq.py)
 [![License](https://img.shields.io/badge/license-MIT-yellow.svg)](https://github.com/thautwarm/Linq.py/blob/master/LICENSE)
 
 ## About Linq

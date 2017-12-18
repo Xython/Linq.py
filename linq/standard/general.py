@@ -2,14 +2,18 @@ from ..core.flow import *
 from ..core.utils import *
 from functools import reduce
 
+from sys import version_info
 try:
     from cytoolz import compose
-except ModuleNotFoundError:
+except (ModuleNotFoundError if version_info.minor >= 6 else ImportError):
     def compose(*fns):
         def call(e):
             return reduce(lambda x, y: y(x), fns[::-1], e)
 
         return call
+
+
+
 
 src = globals()
 __all__ = [src]
