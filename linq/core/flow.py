@@ -27,8 +27,14 @@ class Flow:
             if k in namespace:
                 return partial(namespace[k], self)
         raise NameError(
-                "No extension method named `{}` for {}.".format(
-                        k, '{}.{}'.format(object.__module__, object.__name__)))
+            "No extension method named `{}` for {}.".format(
+                k, '{}.{}'.format(object.__module__, object.__name__)))
+
+    def __str__(self):
+        return self.stream.__str__()
+
+    def __repr__(self):
+        return self.__str__()
 
 
 def extension_std(func):
@@ -48,7 +54,6 @@ def extension_class(cls):
 
 
 def extension_class_name(cls_name, of_module='builtins'):
-
     name = '{}.{}'.format(of_module, cls_name)
     if name not in Extension:
         Extension[name] = dict()
