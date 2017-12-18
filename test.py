@@ -32,10 +32,10 @@ Second Example:
 print('\n================\n')
 seq1 = seq.Take(100)
 seq2 = seq.Take(200).Drop(100)
-s = seq1.Zip(seq2) \
-    .Map(lambda a, b: a / b) \
+s = seq1.Zip(seq2)               \
+    .Map(lambda a, b: a / b)     \
     .GroupBy(lambda x: x // 0.2) \
-    .Then(lambda x: x.items()) \
+    .Then(lambda x: x.items())   \
     .Each(print)
 
 print('\n================\n')
@@ -64,7 +64,7 @@ from linq.core.flow import extension_class, Flow
 
 @extension_class(dict)
 def ToTupleGenerator(self: Flow):
-    return Flow((k, v) for k, v in self.stream.items()).ToList().Unboxed()
+    return Flow((k, v) for k, v in self.stream.items()).ToTuple().Unboxed()
 
 
 try:

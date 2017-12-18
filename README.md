@@ -52,12 +52,104 @@ def group_by(f, container):
     return grouped
 res = group_by(lambda x: x//0.2, map(lambda ab[0]/ab[1], zip(seq1, seq2)))
 ```
+
 Okay, it's not at fault, however, it makes me upset —— why do I have to write these ugly codes?  
-Now, let us try Linq!
+**Now, let us try Linq!**
+
 ```Python
 from linq import Flow, extension_std
 seq = Flow(range(100))
 res = seq.Zip(range(100, 200)).Map(lambda fst, snd : fst/snd).GroupBy(lambda num: num//0.2).Unboxed()
 ```
 
-To be continue.
+
+## How does [Linq.py](https://github.com/thautwarm/Linq.py) work?
+
+There is a core class object, `linq.core.flow.Flow`, which just has one member `stream`.  
+When you want to get a specific extension method from `Flow` object, 
+the `type` of its `stream` member will be used to search whether the extension method exists,
+in other words, extension methods are binded with the type(precisely, `{type.__module__}.{type.__name__}`).
+
+```python
+class Flow:
+    __slots__ = ['stream']
+
+    def __init__(self, sequence):
+        self.stream = sequence
+
+    def __getattr__(self, k):
+        for cls in self.stream.__class__.__mro__:
+            namespace = Extension['{}.{}'.format(cls.__module__, cls.__name__)]
+            if k in namespace:
+                return partial(namespace[k], self)
+        raise NameError(
+            "No extension method named `{}` for {}.".format(
+                k, '{}.{}'.format(object.__module__, object.__name__)))
+
+    def __str__(self):
+        return self.stream.__str__()
+
+    def __repr__(self):
+        return self.__str__()
+```
+
+## Extension Method
+Here are three methods for you to do so.  
+- Firstly, you can use `extension_std` to add extension methods for all Flow objects.  
+
+- Next, you use `extension_class(cls: type)` to add extension methods for all Flow objects whose member `stream`'s type is named `{cls.__module}.{cls.__name__}`.  
+
+- Finally, you can use `extension_class(cls_name: str, of_module='builtins')` to add extension methods for all Flow objects whose member `stream`'s type is named is named `{of_module}.{cls_name}`.  
+(This way to make extension methods is for the **implicit types** in Python, each of which cannot be got except from its instances' meta member `__class__`.)
+
+```python
+@extension_std  # For all Flow objects
+def Add(self, i):
+    return Flow(self.stream + (i.stream if isinstance(i, Flow) else i)))
+
+@extension_class(int) # Just for type `int`
+def Add(self, i):
+    return Flow(self.stream + (i.stream if isinstance(i, Flow) else i)))
+
+@extension_class_name('int',  of_module=int.__module__): # Also for type `int`.
+def Add(self, i):
+    return Flow(self.stream + (i.stream if isinstance(i, Flow) else i)))
+```
+
+## Documents of Standard Extension Methods 
+Note: Docs haven't been finished yet.
+- General(can be used by all Flow objects)
+    - [Unboxed]()
+    - [Sum]()
+    - [Enum]()
+    - [Map]()
+    - [Reduce]()
+    - [Then]()
+    - [Each]()
+    - [Aggregate]()
+    - [Zip]()
+    - [Sorted]()
+    - [ArgSorted]()
+    - [Group]()
+    - [GroupBy]()
+    - [Take]()
+    - [TakeWhile]()
+    - [Drop]()
+    - [Concat]()
+    - [ToList]()
+    - [ToTuple]()
+    - [ToDict]()
+    - [ToSet]()
+    - [All]()
+    - [Any]()
+
+- List
+    - [Extended]()
+    - [Extend]()
+    - [Sort]()
+    - [Reversed]()
+    - [Reverse]()
+    
+- Set
+    - [Intersects]()
+    - [Union]()

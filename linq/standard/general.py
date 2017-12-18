@@ -21,7 +21,7 @@ def Unboxed(self: Flow):
 
 
 @extension_std
-def Sum(self: Flow, f=None, destruct_f=False):
+def Sum(self: Flow, f=None):
     if f is None:
         return Flow(sum(self.stream))
     else:
@@ -93,25 +93,20 @@ def ArgSorted(self: Flow, by=None):
 
 
 @extension_std
+def Group(self, f=None):
+    """The name of this function might be not proper."""
+    if f is None:
+        return Flow(_group(self.stream))
+    if not is_single_param(f):
+        f = destruct_func(f)
+    return Flow(_group(self.stream, f))
+
+
+@extension_std
 def GroupBy(self: Flow, f=None):
     if not is_single_param(f):
         f = destruct_func(f)
     return Flow(_group_by(self.stream, f))
-
-
-@extension_std
-def ToList(self: Flow):
-    return Flow(list(self.stream))
-
-
-@extension_std
-def ToTuple(self: Flow):
-    return Flow(tuple(self.stream))
-
-
-@extension_std
-def ToDict(self: Flow):
-    return Flow(dict(self.stream))
 
 
 @extension_std
@@ -157,6 +152,44 @@ def Concat(self: Flow, *others) -> {'others': 'Seq<Seq> | Seq<Flow<Seq>>'}:
     return Flow(concat_generator(self.stream, *[unbox_if_flow(other) for other in others]))
 
 
+@extension_std
+def ToList(self: Flow):
+    return Flow(list(self.stream))
+
+
+@extension_std
+def ToTuple(self: Flow):
+    return Flow(tuple(self.stream))
+
+
+@extension_std
+def ToDict(self: Flow):
+    return Flow(dict(self.stream))
+
+
+@extension_std
+def ToSet(self: Flow):
+    return Flow(set(self.stream))
+
+
+@extension_std
+def All(self: Flow, f=None):
+    if f is None:
+        return Flow(all(self.stream))
+    if is_single_param(f):
+        f = destruct_func(f)
+    return Flow(all(map(f, self.stream)))
+
+
+@extension_std
+def Any(self: Flow, f=None):
+    if f is None:
+        return Flow(any(self.stream))
+    if is_single_param(f):
+        f = destruct_func(f)
+    return Flow(any(map(f, self.stream)))
+
+
 def _group_by(stream, f=None):
     res = dict()
     if f is None:
@@ -177,3 +210,35 @@ def _group_by(stream, f=None):
         res[group_id].append(each)
 
     return res
+
+
+def _group(stream, f=None):
+    if f is None:
+        grouped = None
+        last = None
+        for e in stream:
+            if grouped is None:
+                grouped = [e]
+            elif last == e:
+                grouped.append(e)
+            else:
+                yield grouped
+                grouped = [e]
+            last = e
+        else:
+            yield grouped
+    else:
+        grouped = None
+        last = None
+        for _e in stream:
+            e = f(_e)
+            if grouped is None:
+                grouped = [_e]
+            elif last == e:
+                grouped.append(_e)
+            else:
+                yield grouped
+                grouped = [_e]
+            last = e
+        else:
+            yield grouped
