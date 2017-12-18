@@ -17,7 +17,7 @@ It's so human readable and it doesn't cost much.
 
 - Reference:
 
-    - Microsoft .NET Genrral introduction => [LINQ: .NET Language-Integrated Query](https://msdn.microsoft.com/en-us/library/bb308959.aspx).
+    - Microsoft .NET general introduction => [LINQ: .NET Language-Integrated Query](https://msdn.microsoft.com/en-us/library/bb308959.aspx).
     - Wikipedia => [Language Integrated Query](https://en.wikipedia.org/wiki/Language_Integrated_Query).
 
 And there are so many scenes very awkward to Python programmer, using `Linq` might help a lot.
