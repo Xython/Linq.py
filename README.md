@@ -1,4 +1,4 @@
-# Linq.py
+# Linq.py 
 
 ## About Linq
 
@@ -153,3 +153,13 @@ Note: Docs haven't been finished yet.
 - Set
     - [Intersects]()
     - [Union]()
+
+## How to Contribute 
+
+- Design the [standard library](https://github.com/thautwarm/Linq.py/tree/master/linq/standard) for [Linq.py](https://github.com/thautwarm/Linq.py).
+
+- Write documents for the standard library and tutorials about how to use [Linq.py](https://github.com/thautwarm/Linq.py).  
+
+- Join [LinqPy Room](https://gitter.im/LinqPy/Lobby) to discuss about any aspects of [Linq.py](https://github.com/thautwarm/Linq.py).
+
+Feel free to pull requests here.
