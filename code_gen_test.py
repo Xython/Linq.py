@@ -74,7 +74,7 @@ N_extension_class_name = len('@extension_class_name(')
 
 def get_class_value(extension_head: str):
     if extension_head.startswith('@extension_class('):
-        ast: Ast = _param_parser(token(extension_head[N_extension_class:-1]), meta=MetaInfo())
+        ast = _param_parser(token(extension_head[N_extension_class:-1]), meta=MetaInfo())
         if len(ast) is not 1:
             raise SyntaxError('Invalid `extension_class` usage.')
         else:
@@ -96,7 +96,7 @@ def get_class_value(extension_head: str):
         return '[1, 2, 3]'
     elif extension_head.startswith('@extension_class_name('):
         ast = _param_parser(extension_head[N_extension_class_name:-1])
-        param: str = ast[0][0].strip('"')
+        param = ast[0][0].strip('"')
         if param == 'generator':
             return '(i for i in range(3))'
         elif param == 'iterator':
