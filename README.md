@@ -4,7 +4,7 @@
 
 ## About Linq
 
-The well-known EDSL in C#, `Language Integrated Query`, in my opinion, is one of the best design in .NET environment.  
+The well-known EDSL in .NET, `Language Integrated Query`, in my opinion, is one of the best design in .NET environment.  
 Here is an example of C# Linq.
 ```C#
 // Calculate MSE loss.
