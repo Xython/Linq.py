@@ -1,0 +1,6 @@
+Def Throw ['def', '(', ')', ':'] ::= 'def' Name C'('  paramList C')' C':';
+NameIg ::=  R'[a-zA-Z_][a-zA-Z_0-9]*';
+param Throw [NameIg, ':', '*', '=', 'None'] ::= [C'*'] Name [':' NameIg] [C'=' 'None'];
+paramList Throw [','] ::= param (C',' param)*;
+Name := R'[a-zA-Z_][a-zA-Z_0-9]*';
+

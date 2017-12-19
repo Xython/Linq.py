@@ -3,6 +3,7 @@ from ..core.utils import *
 from functools import reduce
 
 from sys import version_info
+
 try:
     from cytoolz import compose
 except (ModuleNotFoundError if version_info.minor >= 6 else ImportError):
@@ -11,9 +12,6 @@ except (ModuleNotFoundError if version_info.minor >= 6 else ImportError):
             return reduce(lambda x, y: y(x), fns[::-1], e)
 
         return call
-
-
-
 
 src = globals()
 __all__ = [src]
@@ -56,6 +54,13 @@ def Then(self: Flow, f):
 @extension_std
 def Reduce(self: Flow, f):
     return Flow(reduce(f, self.stream))
+
+
+@extension_std
+def Filter(self: Flow, f):
+    if not is_single_param(f):
+        f = destruct_func(f)
+    return Flow((e for e in self.stream if f(e)))
 
 
 @extension_std
