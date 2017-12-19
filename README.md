@@ -1,7 +1,7 @@
 # Linq.py 
 [![Build Status](https://travis-ci.org/thautwarm/Linq.py.svg?branch=master)](https://travis-ci.org/thautwarm/Linq.py)
 [![License](https://img.shields.io/badge/license-MIT-yellow.svg)](https://github.com/thautwarm/Linq.py/blob/master/LICENSE)
-[![codecov](https://codecov.io/gh/thautwarm/Linq.py/branch/master/graph/badge.svg)](https://codecov.io/gh/thautwarm/Incantation)
+[![codecov](https://codecov.io/gh/thautwarm/Linq.py/branch/master/graph/badge.svg)](https://codecov.io/gh/thautwarm/Linq.py)
 ## About Linq
 
 The well-known EDSL in .NET, `Language Integrated Query`, in my opinion, is one of the best design in .NET environment.  
