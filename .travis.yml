@@ -9,6 +9,7 @@ script:
   - pip install -r requirements.txt
   - python code_gen_test.py
   - coverage run test.py test_manual.py
+  - coverage report
 
 after_success:
   - codecov
