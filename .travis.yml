@@ -1,0 +1,17 @@
+language: python
+python:
+  - "3.4"
+  - "3.5"
+  - "3.6"
+  - "3.6-dev"
+  - "3.7-dev"
+script:
+  - pip install EBNFParser
+  - pip install coverage codecov
+  - python code_gen_test.py
+  - python test.py test_manual.py
+  - coverage run test.py test_manual.py
+  - coverage report
+
+after_success:
+  - codecov
