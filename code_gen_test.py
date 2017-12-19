@@ -19,7 +19,7 @@ def read(file):
 
 
 def recursive_list(directory):
-    files = map(lambda f: f'{directory}/{f}', os.listdir(directory))
+    files = map(lambda f: '{directory}/{f}'.format(f=f, directory=directory), os.listdir(directory))
     res = []
     for file in files:
         if file.endswith('.py'):
