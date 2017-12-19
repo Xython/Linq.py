@@ -1,5 +1,17 @@
+{"Replace":
 {
-  "Reduce": "Flow([1, 2, 3]).Reduce(lambda x, y: x+y)",
-  "ToDict": "Flow([(1, 1), (2, 2), (3, 3)]).ToDict()"
+  "ToDict": "Flow([(1, 1), (2, 2), (3, 3)]).ToDict()",
+  "Then": "Flow([(1, 2), (2, 3)]).Then(lambda x: x); Flow([(1, 2), (2, 3)]).Then(lambda x, y: x + y)"
+},
+"Addition":{
+  "Sorted": "Flow([1, 2, 3]).Sorted()",
+  "ArgSorted": "Flow([3, 2, 1]).ArgSorted()",
+  "Group": "Flow([1, 1, 1]).Group().ToList()",
+  "All": "Flow([1, 1, 1]).All()",
+  "Any": "Flow([1, 1, 1]).Any()",
+  "GroupBy": "Flow([1, 1, 1]).GroupBy().ToList()"
+
+},
+  "Lazy":["Group", "GroupBy", "Map", "Concat"]
 }
 

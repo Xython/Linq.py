@@ -38,33 +38,40 @@ def gen_expr(arg):
     if len(arg) is 1:
         arg = arg[0]
         if arg in ('f', 'by'):
-            return 'lambda x: x'
+            return 'lambda x, y: x + y'
         elif arg in ('other',):
-            return ' [1, 2] '
+            return ' [(1, 2), (2, 2), (3, 3)] '
         elif arg in ('n',):
             return '1'
     elif len(arg) is 2:
         arg = arg[1]
         if arg in ('functions',):
-            return 'lambda x: x'
+            return 'lambda x, y: x + y'
         elif arg in ('others',):
-            return '[1, 2]'
+            return ' [(1, 2), (2, 2), (3, 3)] '
     else:
         return None
+
+
+Lazy = Specific['Lazy']
 
 
 def parser(ast: Ast, value: str):
     if ast is None:
         return None
     name = ast[0]
-    if name in Specific:
-        return Specific[name]
+    if name in Specific['Replace']:
+        return Specific['Replace'][name]
     params = ast[1][1:]
     try:
         params = ','.join(map(gen_expr, params))
     except:
         return None
-    return 'Flow({value}).{name}({params})'.format(value=value, name=name, params=params)
+    ret = 'Flow({value}).{name}({params}){tail}'.format(value=value, name=name, params=params,
+                                                        tail='.ToTuple()' if name in Lazy else '')
+    if name in Specific['Addition']:
+        ret = ret + '\n' + Specific['Addition'][name]
+    return ret
 
 
 N_extension_class = len('@extension_class(')
@@ -82,24 +89,22 @@ def get_class_value(extension_head: str):
                 Warning('Might use invalid `extension_class`.')
             param = param[0]
             if param == 'list':
-                return '[1, 2, 3]'
+                return '[(1, 2), (2, 2), (3, 3)]'
             elif param == 'set':
-                return '{1, 2, 3}'
+                return '{(1, 1), (2, 2), (3, 3)}'
             elif param == 'dict':
-                return '{1:1, 2:2, 3:3}'
+                return '{(1, 1):(1, 1), (2, 2):(2, 2), (3, 3):(3, 3)}'
             elif param == 'tuple':
-                return '(1, 2, 3)'
+                return '((1, 2), (2, 2), (3, 3))'
             else:
                 raise SyntaxWarning('[extension_class]: Cannot recognize user defined class object.')
     elif extension_head.startswith('@extension_std'):
-        return '[1, 2, 3]'
+        return '[(1, 2), (2, 3), (3, 2)]'
     elif extension_head.startswith('@extension_class_name('):
-        ast = _param_parser(extension_head[N_extension_class_name:-1])
-        param = ast[0][0].strip('"')
+        ast = _param_parser(token(extension_head[N_extension_class_name+1:-2]), meta=MetaInfo())
+        param = ast[0][0]
         if param == 'generator':
             return '(i for i in range(3))'
-        elif param == 'iterator':
-            return 'iter([1, 2, 3])'
         else:
             raise SyntaxError('[extension_class_name]: Cannot recognize user defined class object.')
     else:
@@ -123,12 +128,12 @@ def gen_functions(files):
     return '\n'.join(generated)
 
 
-with open('auto_code_gen_test.py', 'w', encoding='utf8') as auto_gen_file:
-    auto_gen_file.write(
-"""
+with open('test.py', 'w', encoding='utf8') as auto_gen_file:
+    auto_gen_file.write("""
+
 from linq import Flow
 import linq.standard
 {tests}
 """.format(tests=gen_functions(recursive_list('linq')))
-    )
+                        )
 print(gen_functions(recursive_list('linq')))

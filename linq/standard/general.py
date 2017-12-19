@@ -113,7 +113,7 @@ def Group(self, f=None):
 
 @extension_std
 def GroupBy(self: Flow, f=None):
-    if not is_single_param(f):
+    if f and not is_single_param(f):
         f = destruct_func(f)
     return Flow(_group_by(self.stream, f))
 
