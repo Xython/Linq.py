@@ -30,7 +30,6 @@ def recursive_list(directory):
     return res
 
 
-from typing import List
 with open('code_gen_test/specific.json', 'r') as _:
     Specific = json.load(_)
 
@@ -107,7 +106,7 @@ def get_class_value(extension_head: str):
         raise SyntaxError('Unknown extension head.')
 
 
-def gen_functions(files: List[str]):
+def gen_functions(files):
     generated = []
     for codes in files:
         sources = codes.split('\n')
@@ -126,10 +125,10 @@ def gen_functions(files: List[str]):
 
 with open('auto_code_gen_test.py', 'w', encoding='utf8') as auto_gen_file:
     auto_gen_file.write(
-"""
-from linq import Flow
-import linq.standard
-{tests}
-""".format(tests=gen_functions(recursive_list('linq')))
+        """
+        from linq import Flow
+        import linq.standard
+        {tests}
+        """.format(tests=gen_functions(recursive_list('linq')))
     )
 print(gen_functions(recursive_list('linq')))
