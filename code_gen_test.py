@@ -125,10 +125,10 @@ def gen_functions(files):
 
 with open('auto_code_gen_test.py', 'w', encoding='utf8') as auto_gen_file:
     auto_gen_file.write(
-        """
-        from linq import Flow
-        import linq.standard
-        {tests}
-        """.format(tests=gen_functions(recursive_list('linq')))
+"""
+from linq import Flow
+import linq.standard
+{tests}
+""".format(tests=gen_functions(recursive_list('linq')))
     )
 print(gen_functions(recursive_list('linq')))
