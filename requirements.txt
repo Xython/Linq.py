@@ -1,2 +1,3 @@
 EBNFParser >= 1.0.1
 coverage
+codecov
