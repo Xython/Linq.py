@@ -5,9 +5,11 @@ python:
   - "3.6"
   - "3.6-dev"
   - "3.7-dev"
+install:
+  - pip install codecov coverage
+
 script:
   - pip install EBNFParser
-  - pip install coverage codecov
   - python code_gen_test.py
   - python test.py test_manual.py
   - coverage run test.py test_manual.py
