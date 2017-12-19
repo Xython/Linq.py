@@ -1,7 +1,7 @@
 
-        from linq import Flow
-        import linq.standard
-        Flow([1, 2, 3]).Unboxed()
+from linq import Flow
+import linq.standard
+Flow([1, 2, 3]).Unboxed()
 Flow([1, 2, 3]).Sum(lambda x: x)
 Flow([1, 2, 3]).Enum()
 Flow([1, 2, 3]).Map(lambda x: x)
