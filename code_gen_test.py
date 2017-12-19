@@ -1,7 +1,10 @@
 import os
+
+from Ruikowa.ObjectRegex.MetaInfo import MetaInfo
+
 from linq import Flow
 import linq.standard
-from code_gen_test.mparser import Def
+from code_gen_test.mparser import Def, token
 from Ruikowa.ObjectRegex.ASTDef import Ast
 from Ruikowa.ErrorFamily import handle_error
 
@@ -45,9 +48,15 @@ def gen_expr(arg):
 
 
 def parser(ast: Ast):
+    if ast is None:
+        return None
+    print(ast)
     name = ast[0]
     params = ast[1][1:]
-    params = ','.join(map(gen_expr, params))
+    try:
+        params = ','.join(map(gen_expr, params))
+    except:
+        return None
     return 'Flow([1, 2, 3]).{name}({params})'.format(name=name, params=params)
 
 
@@ -60,7 +69,7 @@ def gen_functions(files: List[str]):
             .Map(lambda i, x: i + 1 if x.startswith('@extension_') else None) \
             .Filter(lambda x: x).ToTuple().Unboxed()
 
-        generated.extend(list(filter(lambda x: x, map(lambda i: parser(sources[i]), index))))
+        generated.extend(list(filter(lambda x: x, map(lambda i: parser(_parser(token(sources[i]), meta=MetaInfo())), index))))
     return '\n'.join(generated)
 
 
