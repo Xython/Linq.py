@@ -113,7 +113,7 @@ def Add(self, i):
 def Add(self, i):
     return Flow(self.stream + (i.stream if isinstance(i, Flow) else i)))
 
-@extension_class_name('int',  of_module=int.__module__): # Also for type `int`.
+@extension_class_name('int',  of_module=int.__module__) # Also for type `int`.
 def Add(self, i):
     return Flow(self.stream + (i.stream if isinstance(i, Flow) else i)))
 ```
