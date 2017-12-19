@@ -1,0 +1,5 @@
+{
+  "Reduce": "Flow([1, 2, 3]).Reduce(lambda x, y: x+y)",
+  "ToDict": "Flow([(1, 1), (2, 2), (3, 3)]).ToDict()"
+}
+

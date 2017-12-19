@@ -52,7 +52,7 @@ def Then(self: Flow, f):
 
 
 @extension_std
-def Reduce(self: Flow, f):
+def Reduce(self: Flow, f) -> {'example': 'Flow([1,2,3]).Reduce(lambda x,y :x+y)'}:
     return Flow(reduce(f, self.stream))
 
 
@@ -185,7 +185,7 @@ def ToSet(self: Flow):
 def All(self: Flow, f=None):
     if f is None:
         return Flow(all(self.stream))
-    if is_single_param(f):
+    if not is_single_param(f):
         f = destruct_func(f)
     return Flow(all(map(f, self.stream)))
 
@@ -194,7 +194,7 @@ def All(self: Flow, f=None):
 def Any(self: Flow, f=None):
     if f is None:
         return Flow(any(self.stream))
-    if is_single_param(f):
+    if not is_single_param(f):
         f = destruct_func(f)
     return Flow(any(map(f, self.stream)))
 

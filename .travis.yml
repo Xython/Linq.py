@@ -6,9 +6,9 @@ python:
   - "3.6-dev"
   - "3.7-dev"
 script:
+  - pip install -r requirements.txt
   - python test.py
-
-script:
-  - coverage run test.py
+  - python code_gen_test.py
+  - python auto_code_gen_test.py
 after_success:
   - codecov
