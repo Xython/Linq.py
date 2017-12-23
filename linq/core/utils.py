@@ -6,7 +6,7 @@ def concat_generator(*generators):
         yield from generator
 
 
-def is_single_param(f):
+def is_to_destruct(f):
     if not callable(f):
         raise TypeError('Not callable argument!')
     try:

@@ -27,7 +27,7 @@ def Sum(self: Flow, f=None):
     if f is None:
         return Flow(sum(self.stream))
     else:
-        if not is_single_param(f):
+        if not is_to_destruct(f):
             f = destruct_func(f)
         return Flow(sum(map(f, self.stream)))
 
@@ -39,14 +39,14 @@ def Enum(self: Flow):
 
 @extension_std
 def Map(self: Flow, f):
-    if not is_single_param(f):
+    if not is_to_destruct(f):
         f = destruct_func(f)
     return Flow(map(f, self.stream))
 
 
 @extension_std
 def Then(self: Flow, f):
-    if not is_single_param(f):
+    if not is_to_destruct(f):
         f = destruct_func(f)
     return Flow(f(self.stream))
 
@@ -58,14 +58,14 @@ def Reduce(self: Flow, f) -> {'example': 'Flow([1,2,3]).Reduce(lambda x,y :x+y)'
 
 @extension_std
 def Filter(self: Flow, f):
-    if not is_single_param(f):
+    if not is_to_destruct(f):
         f = destruct_func(f)
     return Flow((e for e in self.stream if f(e)))
 
 
 @extension_std
 def Each(self: Flow, f):
-    if not is_single_param(f):
+    if not is_to_destruct(f):
         f = destruct_func(f)
     for e in self.stream:
         f(e)
@@ -74,7 +74,7 @@ def Each(self: Flow, f):
 @extension_std
 def Aggregate(self: Flow, *functions) -> {'functions': 'Seq<Callable> | Seq<Flow<Callable>>'}:
     return Flow((fn(self.stream) for fn in
-                 map(lambda f: f if is_single_param(unbox_if_flow(f)) else destruct_func(unbox_if_flow(f)),
+                 map(lambda f: f if is_to_destruct(unbox_if_flow(f)) else destruct_func(unbox_if_flow(f)),
                      functions)))
 
 
@@ -87,7 +87,7 @@ def Zip(self: Flow, *others) -> {'others': 'Seq<Seq> | Seq<Flow<Seq>>'}:
 def Sorted(self: Flow, by=None):
     if by is None:
         return Flow(sorted(self.stream))
-    if not is_single_param(by):
+    if not is_to_destruct(by):
         by = destruct_func(by)
     return Flow(sorted(self.stream, key=by))
 
@@ -96,7 +96,7 @@ def Sorted(self: Flow, by=None):
 def ArgSorted(self: Flow, by=None):
     if by is None:
         return Flow(sorted(range(len(self.stream)), key=self.stream.__getitem__))
-    if not is_single_param(by):
+    if not is_to_destruct(by):
         by = destruct_func(by)
     return Flow(sorted(range(len(self.stream)), key=compose(by, self.stream.__getitem__)))
 
@@ -106,14 +106,14 @@ def Group(self, f=None):
     """The name of this function might be not proper."""
     if f is None:
         return Flow(_group(self.stream))
-    if not is_single_param(f):
+    if not is_to_destruct(f):
         f = destruct_func(f)
     return Flow(_group(self.stream, f))
 
 
 @extension_std
 def GroupBy(self: Flow, f=None):
-    if f and not is_single_param(f):
+    if f and not is_to_destruct(f):
         f = destruct_func(f)
     return Flow(_group_by(self.stream, f))
 
@@ -125,7 +125,7 @@ def Take(self: Flow, n):
 
 @extension_std
 def TakeIf(self: Flow, f):
-    if not is_single_param(f):
+    if not is_to_destruct(f):
         f = destruct_func(f)
 
     return Flow((e for e in self.stream if f(e)))
@@ -133,7 +133,7 @@ def TakeIf(self: Flow, f):
 
 @extension_std
 def TakeWhile(self: Flow, f):
-    if not is_single_param(f):
+    if not is_to_destruct(f):
         f = destruct_func(f)
 
     def take():
@@ -185,7 +185,7 @@ def ToSet(self: Flow):
 def All(self: Flow, f=None):
     if f is None:
         return Flow(all(self.stream))
-    if not is_single_param(f):
+    if not is_to_destruct(f):
         f = destruct_func(f)
     return Flow(all(map(f, self.stream)))
 
@@ -194,7 +194,7 @@ def All(self: Flow, f=None):
 def Any(self: Flow, f=None):
     if f is None:
         return Flow(any(self.stream))
-    if not is_single_param(f):
+    if not is_to_destruct(f):
         f = destruct_func(f)
     return Flow(any(map(f, self.stream)))
 
@@ -208,7 +208,7 @@ def _group_by(stream, f=None):
             res[each].append(each)
         return res
 
-    if not is_single_param(f):
+    if not is_to_destruct(f):
         f = destruct_func(f)
 
     for each in stream:
