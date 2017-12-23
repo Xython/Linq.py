@@ -11,3 +11,17 @@ class Generator:
                 now = self.rule(now)
             except StopIteration:
                 break
+
+
+class ScanGenerator:
+    def __init__(self, rule, seq, start_elem):
+        self.rule = rule
+        self.seq = seq
+        self.start_elem = start_elem
+
+    def __iter__(self):
+        for now in self.seq:
+            acc = self.start_elem
+            acc = self.rule(acc, now)
+            yield acc
+            self.start_elem = acc

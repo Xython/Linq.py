@@ -1,3 +1,4 @@
+from ..core.collections import ScanGenerator
 from ..core.flow import *
 from ..core.utils import *
 from functools import reduce
@@ -51,6 +52,11 @@ def Then(self: Flow, f):
     if not is_single_param(f):
         f = destruct_func(f)
     return Flow(f(self.stream))
+
+
+@extension_std
+def Scan(self: Flow, f, start_elem):
+    return Flow(ScanGenerator(f, self.stream, start_elem))
 
 
 @extension_std
