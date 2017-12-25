@@ -1,10 +1,13 @@
 # Linq.py 
 [![Build Status](https://travis-ci.org/thautwarm/Linq.py.svg?branch=master)](https://travis-ci.org/thautwarm/Linq.py)
 [![License](https://img.shields.io/badge/license-MIT-yellow.svg)](https://github.com/thautwarm/Linq.py/blob/master/LICENSE)
+[![codecov](https://codecov.io/gh/thautwarm/Linq.py/branch/master/graph/badge.svg)](https://codecov.io/gh/thautwarm/Linq.py)
+
+- PS: [Coverage Here](https://travis-ci.org/thautwarm/Linq.py/jobs/318643137).
 
 ## About Linq
 
-The well-known EDSL in C#, `Language Integrated Query`, in my opinion, is one of the best design in .NET environment.  
+The well-known EDSL in .NET, `Language Integrated Query`, in my opinion, is one of the best design in .NET environment.  
 Here is an example of C# Linq.
 ```C#
 // Calculate MSE loss.
@@ -113,7 +116,7 @@ def Add(self, i):
 def Add(self, i):
     return Flow(self.stream + (i.stream if isinstance(i, Flow) else i)))
 
-@extension_class_name('int',  of_module=int.__module__): # Also for type `int`.
+@extension_class_name('int',  of_module=int.__module__) # Also for type `int`.
 def Add(self, i):
     return Flow(self.stream + (i.stream if isinstance(i, Flow) else i)))
 ```
