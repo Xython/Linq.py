@@ -1,3 +1,4 @@
+from ..core.collections import ScanGenerator
 from ..core.flow import *
 from ..core.utils import *
 from functools import reduce
@@ -52,7 +53,12 @@ def Then(self: Flow, f):
 
 
 @extension_std
-def Reduce(self: Flow, f) -> {'example': 'Flow([1,2,3]).Reduce(lambda x,y :x+y)'}:
+def Scan(self: Flow, f, start_elem):
+    return Flow(ScanGenerator(f, self.stream, start_elem))
+
+
+@extension_std
+def Reduce(self: Flow, f):
     return Flow(reduce(f, self.stream))
 
 
