@@ -20,8 +20,8 @@ class ScanGenerator:
         self.start_elem = start_elem
 
     def __iter__(self):
+        last = self.start_elem
         for now in self.seq:
-            acc = self.start_elem
-            acc = self.rule(acc, now)
+            acc = self.rule(last, now)
             yield acc
-            self.start_elem = acc
+            last = acc
