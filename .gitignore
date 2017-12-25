@@ -6,3 +6,6 @@
 .ipynb_checkpoints/
 __pycache__/
 htmlcov/
+Linq.py.egg-info/
+dist/
+build/
