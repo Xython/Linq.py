@@ -4,7 +4,7 @@ with open('./README.rst', encoding='utf-8') as f:
     readme = f.read()
 
 setup(
-    name='Linq.py',
+    name='Linq',
     version='0.1',
     keywords='Linq',
     long_description=readme,

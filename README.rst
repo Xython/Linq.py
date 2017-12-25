@@ -39,6 +39,7 @@ Awkward Scenes in Python
 
 .. code:: python
 
+
     seq1 = range(100)
     seq2 = range(100, 200)
     zipped = zip(seq1, seq2)
@@ -54,10 +55,12 @@ Awkward Scenes in Python
     for e in grouped.items():
         print(e)
 
-| The codes seems to be too long...
-| Now we extract the function ``group_by``:
+The codes seems to be too long...
+
+Now we extract the function ``group_by``:
 
 .. code:: python
+
 
     def group_by(f, container):
         grouped = dict()
@@ -70,11 +73,13 @@ Awkward Scenes in Python
         return grouped
     res = group_by(lambda x: x//0.2, map(lambda ab[0]/ab[1], zip(seq1, seq2)))
 
-| Okay, it's not at fault, however, it makes me upset —— why do I have
-  to write these ugly codes?
-| **Now, let us try Linq!**
+Okay, it's not at fault, however, it makes me upset —— why do I have to
+write these ugly codes?
+
+**Now, let us try Linq!**
 
 .. code:: python
+
 
     from linq import Flow, extension_std
     seq = Flow(range(100))
@@ -87,11 +92,12 @@ How does `Linq.py <https://github.com/thautwarm/Linq.py>`__ work?
   one member ``stream``.
 | When you want to get a specific extension method from ``Flow`` object,
   the ``type`` of its ``stream`` member will be used to search whether
-  the extension method exists, in other words, extension methods are
-  binded with the type(precisely,
+  the extension method exists.
+| In other words, extension methods are binded with the type(precisely,
   ``{type.__module__}.{type.__name__}``).
 
 .. code:: python
+
 
     class Flow:
         __slots__ = ['stream']
@@ -117,23 +123,26 @@ How does `Linq.py <https://github.com/thautwarm/Linq.py>`__ work?
 Extension Method
 ----------------
 
-| Here are three methods for you to do so.
-| - Firstly, you can use ``extension_std`` to add extension methods for
-  all Flow objects.
+Here are three methods for you to do so.
+
+-  Firstly, you can use ``extension_std`` to add extension methods for
+   all Flow objects.
 
 -  Next, you use ``extension_class(cls: type)`` to add extension methods
    for all Flow objects whose member ``stream``'s type is named
    ``{cls.__module}.{cls.__name__}``.
 
--  | Finally, you can use
-     ``extension_class(cls_name: str, of_module='builtins')`` to add
-     extension methods for all Flow objects whose member ``stream``'s
-     type is named is named ``{of_module}.{cls_name}``.
-   | (This way to make extension methods is for the **implicit types**
-     in Python, each of which cannot be got except from its instances'
-     meta member ``__class__``.)
+-  Finally, you can use
+   ``extension_class(cls_name: str,  of_module='builtins')`` to add
+   extension methods for all Flow objects whose member ``stream``'s type
+   is named is named ``{of_module}.{cls_name}``.
+
+(This way to make extension methods is for the **implicit types** in
+Python, each of which cannot be got except from its instances' meta
+member ``__class__``.)
 
 .. code:: python
+
 
     @extension_std  # For all Flow objects
     def Add(self, i):
@@ -150,13 +159,33 @@ Extension Method
 Documents of Standard Extension Methods
 ---------------------------------------
 
-Note: Docs haven't been finished yet. - General(can be used by all Flow
-objects) - `Unboxed <>`__ - `Sum <>`__ - `Enum <>`__ - `Map <>`__ -
-`Reduce <>`__ - `Then <>`__ - `Each <>`__ - `Aggregate <>`__ -
-`Zip <>`__ - `Sorted <>`__ - `ArgSorted <>`__ - `Group <>`__ -
-`GroupBy <>`__ - `Take <>`__ - `TakeWhile <>`__ - `Drop <>`__ -
-`Concat <>`__ - `ToList <>`__ - `ToTuple <>`__ - `ToDict <>`__ -
-`ToSet <>`__ - `All <>`__ - `Any <>`__
+Note: Docs haven't been finished yet.
+
+-  General(can be used by all Flow objects)
+
+   -  `Unboxed <>`__
+   -  `Sum <>`__
+   -  `Enum <>`__
+   -  `Map <>`__
+   -  `Reduce <>`__
+   -  `Then <>`__
+   -  `Each <>`__
+   -  `Aggregate <>`__
+   -  `Zip <>`__
+   -  `Sorted <>`__
+   -  `ArgSorted <>`__
+   -  `Group <>`__
+   -  `GroupBy <>`__
+   -  `Take <>`__
+   -  `TakeWhile <>`__
+   -  `Drop <>`__
+   -  `Concat <>`__
+   -  `ToList <>`__
+   -  `ToTuple <>`__
+   -  `ToDict <>`__
+   -  `ToSet <>`__
+   -  `All <>`__
+   -  `Any <>`__
 
 -  List
 
