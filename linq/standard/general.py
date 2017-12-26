@@ -58,8 +58,8 @@ def Scan(self: Flow, f, start_elem):
 
 
 @extension_std
-def Reduce(self: Flow, f):
-    return Flow(reduce(f, self.stream))
+def Reduce(self: Flow, f, start_elem=None):
+    return Flow(reduce(f, self.stream, start_elem))
 
 
 @extension_std
@@ -160,6 +160,11 @@ def Drop(self: Flow, n):
         return con
 
     return Flow(drop())
+
+
+@extension_std
+def Skip(self: Flow, n):
+    return self.Drop(n)
 
 
 @extension_std
