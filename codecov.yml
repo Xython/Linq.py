@@ -1,2 +1,4 @@
 fixes:
   - "before/::after/"
+  - "::after/" 
+  - "before/::" 
