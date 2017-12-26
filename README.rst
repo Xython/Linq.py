@@ -3,6 +3,32 @@ Linq.py
 
 |Build Status| |License| |codecov| |Coverage Status| |PyPI version|
 
+Install
+-------
+
+::
+
+    pip install -U Linq
+
+Here is an example to get top 10 frequent pixels in a picture.
+
+.. code:: python
+
+
+    from linq import Flow
+    import numpy as np
+
+    def most_frequent(arr: np.ndarray) -> np.ndarray:
+        return  Flow(arr.flatten())                     \
+                        .GroupBy(lambda _: _)           \
+                        .Then(lambda x: x.items())      \
+                        .Map(lambda k, v: (k, len(v)))  \
+                        .Sorted(by=lambda _, v: -v)     \
+                        .Take(10)                       \
+                        .Map(lambda k, _: k)            \
+                        .ToList()                      \
+                        .Then(np.array).Unboxed()
+
 About Linq
 ----------
 
