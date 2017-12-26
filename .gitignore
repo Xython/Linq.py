@@ -10,3 +10,4 @@ Linq.py.egg-info/
 Linq.egg-info/
 dist/
 build/
+.coverage
