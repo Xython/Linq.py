@@ -1,17 +1,22 @@
 {"Replace":
 {
   "ToDict": "Flow([(1, 1), (2, 2), (3, 3)]).ToDict()",
-  "Then": "Flow([(1, 2), (2, 3)]).Then(lambda x: x); Flow([(1, 2), (2, 3)]).Then(lambda x, y: x + y)"
+  "Then": "Flow([(1, 2), (2, 3)]).Then(lambda x: x); Flow([(1, 2), (2, 3)]).Then(lambda x, y: x + y)",
+  "Aggregate": "Flow([1, 2, 3, 4, 5]).Aggregate(max, min, sum).ToTuple()"
 },
 "Addition":{
-  "Sorted": "Flow([1, 2, 3]).Sorted()",
-  "ArgSorted": "Flow([3, 2, 1]).ArgSorted()",
+  "Sorted": "Flow([1, 2, 3]).Sorted().Sorted(by=lambda x: -x)",
+  "ArgSorted": "Flow([3, 2, 1]).ArgSorted(); Flow([(1,1),(2, 2), (3, 1)]).ArgSorted(by=lambda a, b: a*b).ToList()",
   "Group": "Flow([1, 1, 1]).Group().ToList()",
   "All": "Flow([1, 1, 1]).All()",
   "Any": "Flow([1, 1, 1]).Any()",
-  "GroupBy": "Flow([1, 1, 1]).GroupBy().ToList()"
-
+  "GroupBy": "Flow([1, 1, 1]).GroupBy().ToList()",
+  "Reduce": "Flow([1,2,3]).Reduce(lambda x, y: x+y, -1)",
+  "Group": "Flow([1, 1,  2, 3, 3]).Group().Map(lambda _ : (len(_), len(_))).Group(lambda a, b: a*b).ToTuple()",
+  "TakeWhile": "Flow([1, 2, 3, 4, 5, 6]).TakeWhile(lambda x: x<3).ToTuple()",
+  "TakeIf": "print(Flow([1,2,3]).TakeIf(lambda x: x%2).ToTuple())",
+  "Filter": "Flow([(1, 1), (2, 2), (3, 2)]).Filter(lambda x, y: x is y).Filter().Filter(lambda x: x!=(3, 2)).All()"
 },
-  "Lazy":["Group", "GroupBy", "Map", "Concat"]
+  "Lazy":["Group", "GroupBy", "Map", "Concat", "Take", "TakeIf", "TakeWhile", "Fliter"]
 }
 

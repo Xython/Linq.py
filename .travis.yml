@@ -6,12 +6,12 @@ python:
   - "3.6-dev"
   - "3.7-dev"
 install:
-  - pip install codecov coverage
+  - pip install codecov coverage pytest-cov
 
 script:
   - pip install EBNFParser
   - python code_gen_test.py
-  - python test.py test_manual.py
+  - py.test test.py test_manual.py --cov=linq
   - coverage run test.py test_manual.py
   - coverage report
 
