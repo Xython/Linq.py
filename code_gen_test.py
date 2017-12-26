@@ -61,21 +61,21 @@ def parser(ast: Ast, value: str):
         return None
     name = ast[0]
     if name in Specific['Replace']:
-        return Specific['Replace'][name]
-    params = ast[1][1:]
-    try:
-        params = ','.join(map(gen_expr, params))
-    except:
-        return None
-    ret = 'Flow({value}).{name}({params}){tail}'.format(value=value, name=name, params=params,
-                                                        tail='.ToTuple()' if name in Lazy else '')
+        ret = Specific['Replace'][name]
+    else:
+        params = ast[1][1:]
+        try:
+            params = ','.join(map(gen_expr, params))
+        except:
+            return None
+        ret = 'Flow({value}).{name}({params}){tail}'.format(value=value, name=name, params=params,
+                                                            tail='.ToTuple()' if name in Lazy else '')
     if name in Specific['Addition']:
-        ret = ret + '\n' + Specific['Addition'][name]
+        ret = ret + ';' + Specific['Addition'][name]
     return """
 def test_{}():
     {}
-""".format(name, ret)
-    
+test_{}()""".format(name, ret, name)
 
 
 N_extension_class = len('@extension_class(')
@@ -105,7 +105,7 @@ def get_class_value(extension_head: str):
     elif extension_head.startswith('@extension_std'):
         return '[(1, 2), (2, 3), (3, 2)]'
     elif extension_head.startswith('@extension_class_name('):
-        ast = _param_parser(token(extension_head[N_extension_class_name+1:-2]), meta=MetaInfo())
+        ast = _param_parser(token(extension_head[N_extension_class_name + 1:-2]), meta=MetaInfo())
         param = ast[0][0]
         if param == 'generator':
             return '(i for i in range(3))'
