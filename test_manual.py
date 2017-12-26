@@ -1,6 +1,7 @@
 from linq.core.collections import Generator as MGenerator
 from linq.core.flow import Flow
-import linq.standard  # see the standard library to get all the extension methods.
+# see the standard library to get all the extension methods.
+import linq.standard
 
 seq = Flow(MGenerator(lambda x: x + 1, start_elem=0))  # [0..\infty]
 # See the definition of MGenerator at https://github.com/thautwarm/ActualFn.py/blob/master/linq/core/collections.py.
@@ -9,12 +10,12 @@ seq = Flow(MGenerator(lambda x: x + 1, start_elem=0))  # [0..\infty]
 
 
 """
-First Example:
+Example 1:
 """
 
 print(seq.Take(10).Enum().Map(lambda a, b: a * b).Sum().Unboxed())
 #   Support infinite sequences, parameters destruct and so on.
-#   Limited by Python's syntax grammar, parameters destruct 
+#   Limited by Python's syntax grammar, parameters destruct
 # cannot be as powerful as pattern matching.
 
 # => 285
@@ -24,9 +25,33 @@ print(sum([a * b for a, b in enumerate(range(10))]))
 # => 285
 
 
+"""
+Example 2:
+"""
+
+# Adding Skip to provide another semantic of Drop
+print(seq.Skip(10).Take(5).ToList().Unboxed())
+# => [10, 11, 12, 13, 14]
+print(seq.Take(10).Drop(5).ToList().Unboxed())
+# => [5, 6, 7, 8, 9]
+print(seq.Skip(5).Take(10).Drop(5).ToList().Unboxed())
+# => [10, 11, 12, 13, 14]
+
 
 """
-Second Example:
+Example 3:
+"""
+
+print(seq.Take(10).Reduce(lambda x, y: x + y, 10).Unboxed())
+# cumulate a single result using a start value.
+# => 55
+print(seq.Take(10).Scan(lambda x, y: x + y, 10).ToList().Unboxed())
+# cumulate a collection of intermediate cumulative results using a start value.
+# => [10, 11, 13, 16, 20, 25, 31, 38, 46, 55]
+
+
+"""
+Example 4:
 """
 
 print('\n================\n')
@@ -44,8 +69,12 @@ seq1 = range(100)
 seq2 = range(100, 200)
 zipped = zip(seq1, seq2)
 mapped = map(lambda ab: ab[0] / ab[1], zipped)
-grouped = dict();
-group_fn = lambda x: x // 0.2
+grouped = dict()
+
+
+def group_fn(x): return x // 0.2
+
+
 for e in mapped:
     group_id = group_fn(e)
     if group_id not in grouped:
@@ -56,7 +85,7 @@ for e in grouped.items():
     print(e)
 
 """
-Last Example:
+Example 5:
 """
 
 from linq.core.flow import extension_class, Flow
