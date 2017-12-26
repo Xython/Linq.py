@@ -29,6 +29,7 @@ print(sum([a * b for a, b in enumerate(range(10))]))
 Example 2:
 """
 
+# Adding Skip to provide another semantic of Drop
 print(seq.Skip(10).Take(5).ToList().Unboxed())
 # => [10, 11, 12, 13, 14]
 print(seq.Take(10).Drop(5).ToList().Unboxed())
