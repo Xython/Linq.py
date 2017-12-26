@@ -71,7 +71,11 @@ def parser(ast: Ast, value: str):
                                                         tail='.ToTuple()' if name in Lazy else '')
     if name in Specific['Addition']:
         ret = ret + '\n' + Specific['Addition'][name]
-    return ret
+    return """
+def test_{}():
+    {}
+""".format(name, ret)
+    
 
 
 N_extension_class = len('@extension_class(')

@@ -11,6 +11,7 @@ install:
 script:
   - pip install EBNFParser
   - python code_gen_test.py
+  - py.test test.py test_manual.py --cov=linq
   - coverage run test.py test_manual.py
   - coverage report
 
