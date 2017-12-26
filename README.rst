@@ -1,10 +1,7 @@
 Linq.py
 =======
 
-|Build Status| |License| |codecov|
-
--  PS: `Coverage
-   Here <https://travis-ci.org/thautwarm/Linq.py/jobs/318643137>`__.
+|Build Status| |License| |codecov| |Coverage Status| |PyPI version|
 
 About Linq
 ----------
@@ -85,8 +82,8 @@ write these ugly codes?
     seq = Flow(range(100))
     res = seq.Zip(range(100, 200)).Map(lambda fst, snd : fst/snd).GroupBy(lambda num: num//0.2).Unboxed()
 
-How does `Linq.py <https://github.com/thautwarm/Linq.py>`__ work?
------------------------------------------------------------------
+How does `Linq.py <https://github.com/Xython/Linq.py>`__ work?
+--------------------------------------------------------------
 
 | There is a core class object, ``linq.core.flow.Flow``, which just has
   one member ``stream``.
@@ -204,21 +201,24 @@ How to Contribute
 -----------------
 
 -  Design the `standard
-   library <https://github.com/thautwarm/Linq.py/tree/master/linq/standard>`__
-   for `Linq.py <https://github.com/thautwarm/Linq.py>`__.
+   library <https://github.com/Xython/Linq.py/tree/master/linq/standard>`__
+   for `Linq.py <https://github.com/Xython/Linq.py>`__.
 
 -  Write documents for the standard library and tutorials about how to
-   use `Linq.py <https://github.com/thautwarm/Linq.py>`__.
+   use `Linq.py <https://github.com/Xython/Linq.py>`__.
 
 -  Join `LinqPy Room <https://gitter.im/LinqPy/Lobby>`__ to discuss
-   about any aspects of
-   `Linq.py <https://github.com/thautwarm/Linq.py>`__.
+   about any aspects of `Linq.py <https://github.com/Xython/Linq.py>`__.
 
 Feel free to pull requests here.
 
-.. |Build Status| image:: https://travis-ci.org/thautwarm/Linq.py.svg?branch=master
-   :target: https://travis-ci.org/thautwarm/Linq.py
+.. |Build Status| image:: https://travis-ci.org/Xython/Linq.py.svg?branch=master
+   :target: https://travis-ci.org/Xython/Linq.py
 .. |License| image:: https://img.shields.io/badge/license-MIT-yellow.svg
-   :target: https://github.com/thautwarm/Linq.py/blob/master/LICENSE
-.. |codecov| image:: https://codecov.io/gh/thautwarm/Linq.py/branch/master/graph/badge.svg
-   :target: https://codecov.io/gh/thautwarm/Linq.py
+   :target: https://github.com/Xython/Linq.py/blob/master/LICENSE
+.. |codecov| image:: https://codecov.io/gh/Xython/Linq.py/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/Xython/Linq.py
+.. |Coverage Status| image:: https://coveralls.io/repos/github/Xython/Linq.py/badge.svg?branch=master
+   :target: https://coveralls.io/github/Xython/Linq.py?branch=master
+.. |PyPI version| image:: https://img.shields.io/pypi/v/Linq.py.svg
+   :target: https://pypi.python.org/pypi/Linq.py
