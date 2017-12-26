@@ -1,8 +1,37 @@
 # see the standard library to get all the extension methods.
-def test_all():
-    from linq.core.flow import Flow
-    from linq.core.collections import Generator as MGenerator
-    seq = Flow(MGenerator(lambda x: x + 1, start_elem=0))  # [0..\infty]
+
+from linq.core.collections import Generator as MGenerator
+from linq import Flow, extension_class, extension_class_name
+
+
+def test_other():
+    def block_lambda(e):
+        e = e + 1
+        if e < 10:
+            return e
+        else:
+            raise StopIteration
+
+    res = Flow(MGenerator(block_lambda, 0)).Take(100).ToList()
+
+    assert res.__str__() == res.__repr__()
+
+
+test_other()
+
+
+def my_test(func):
+    def call():
+        global seq
+        seq = Flow(MGenerator(lambda x: x + 1, start_elem=0))  # [0..\infty]
+        func.__globals__['seq'] = seq
+        func()
+
+    return call
+
+
+@my_test
+def test_example1():
     # See the definition of MGenerator at https://github.com/thautwarm/ActualFn.py/blob/master/linq/core/collections.py.
     # It's a generalization of PyGenerator.
     # What's more, it can be deepcopid and serialized!
@@ -24,6 +53,11 @@ def test_all():
     # => 285
 
 
+test_example1()
+
+
+@my_test
+def test_example2():
     """
     Example 2:
     """
@@ -37,6 +71,11 @@ def test_all():
     # => [10, 11, 12, 13, 14]
 
 
+test_example2()
+
+
+@my_test
+def test_example3():
     """
     Example 3:
     """
@@ -49,6 +88,11 @@ def test_all():
     # => [10, 11, 13, 16, 20, 25, 31, 38, 46, 55]
 
 
+test_example3()
+
+
+@my_test
+def test_example4():
     """
     Example 4:
     """
@@ -56,10 +100,10 @@ def test_all():
     print('\n================\n')
     seq1 = seq.Take(100)
     seq2 = seq.Take(200).Drop(100)
-    s = seq1.Zip(seq2)               \
-        .Map(lambda a, b: a / b)     \
+    s = seq1.Zip(seq2) \
+        .Map(lambda a, b: a / b) \
         .GroupBy(lambda x: x // 0.2) \
-        .Then(lambda x: x.items())   \
+        .Then(lambda x: x.items()) \
         .Each(print)
 
     print('\n================\n')
@@ -70,9 +114,8 @@ def test_all():
     mapped = map(lambda ab: ab[0] / ab[1], zipped)
     grouped = dict()
 
-
-    def group_fn(x): return x // 0.2
-
+    def group_fn(x):
+        return x // 0.2
 
     for e in mapped:
         group_id = group_fn(e)
@@ -83,17 +126,19 @@ def test_all():
     for e in grouped.items():
         print(e)
 
+
+test_example4()
+
+
+@my_test
+def test_example5():
     """
     Example 5:
     """
 
-    from linq.core.flow import extension_class, Flow
-
-
     @extension_class(dict)
     def ToTupleGenerator(self: Flow):
         return Flow((k, v) for k, v in self.stream.items()).ToTuple().Unboxed()
-
 
     try:
         seq.Take(10).ToTupleGenerator()
@@ -104,4 +149,16 @@ def test_all():
     """
     print(seq.Take(10).Zip(seq.Take(10)).ToDict().ToTupleGenerator())
 
-test_all()
+
+test_example5()
+
+
+@my_test
+def test_extension_byclsname():
+    @extension_class_name('generator')
+    def MyNext(self: Flow):
+        return self.Then(next)
+
+
+test_extension_byclsname()
+Flow((i for i in range(10))).MyNext()

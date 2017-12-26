@@ -2,7 +2,8 @@
 {
   "ToDict": "Flow([(1, 1), (2, 2), (3, 3)]).ToDict()",
   "Then": "Flow([(1, 2), (2, 3)]).Then(lambda x: x); Flow([(1, 2), (2, 3)]).Then(lambda x, y: x + y)",
-  "Aggregate": "Flow([1, 2, 3, 4, 5]).Aggregate(max, min, sum).ToTuple()"
+  "Aggregate": "Flow([1, 2, 3, 4, 5]).Aggregate(max, min, sum).ToTuple()",
+  "Scan": "Flow([2, 3, 5]).Scan(lambda last, now: last + now, 0).ToList()"
 },
 "Addition":{
   "Sorted": "Flow([1, 2, 3]).Sorted().Sorted(by=lambda x: -x)",
@@ -16,6 +17,7 @@
   "TakeWhile": "Flow([1, 2, 3, 4, 5, 6]).TakeWhile(lambda x: x<3).ToTuple()",
   "TakeIf": "Flow([1,2,3]).TakeIf(lambda x: x%2).ToTuple()",
   "Filter": "Flow([(1, 1), (2, 2), (3, 2)]).Filter(lambda x, y: x is y).Filter().Filter(lambda x: x!=(3, 2)).All()"
+
 },
   "Lazy":["Group", "GroupBy", "Map", "Concat", "Take", "TakeIf", "TakeWhile", "Fliter"]
 }

@@ -1,7 +1,6 @@
 
 
 from linq import Flow
-import linq.standard
 
 def test_Unboxed():
     Flow([(1, 2), (2, 3), (3, 2)]).Unboxed()
@@ -22,6 +21,10 @@ test_Map()
 def test_Then():
     Flow([(1, 2), (2, 3)]).Then(lambda x: x); Flow([(1, 2), (2, 3)]).Then(lambda x, y: x + y)
 test_Then()
+
+def test_Scan():
+    Flow([2, 3, 5]).Scan(lambda last, now: last + now, 0).ToList()
+test_Scan()
 
 def test_Filter():
     Flow([(1, 2), (2, 3), (3, 2)]).Filter(lambda x, y: x + y);Flow([(1, 1), (2, 2), (3, 2)]).Filter(lambda x, y: x is y).Filter().Filter(lambda x: x!=(3, 2)).All()

@@ -160,42 +160,42 @@ Note: Docs haven't been finished yet.
 
 -  General(can be used by all Flow objects)
 
-   -  `Unboxed <>`__
-   -  `Sum <>`__
-   -  `Enum <>`__
-   -  `Map <>`__
-   -  `Reduce <>`__
-   -  `Then <>`__
-   -  `Each <>`__
-   -  `Aggregate <>`__
-   -  `Zip <>`__
-   -  `Sorted <>`__
-   -  `ArgSorted <>`__
-   -  `Group <>`__
-   -  `GroupBy <>`__
-   -  `Take <>`__
-   -  `TakeWhile <>`__
-   -  `Drop <>`__
-   -  `Concat <>`__
-   -  `ToList <>`__
-   -  `ToTuple <>`__
-   -  `ToDict <>`__
-   -  `ToSet <>`__
-   -  `All <>`__
-   -  `Any <>`__
+   -  `Unboxed <https://github.com/Xython/Linq.py/blob/master/docs/general.md#unboxed>`__
+   -  `Sum <https://github.com/Xython/Linq.py/blob/master/docs/general.md#sum>`__
+   -  `Enum <https://github.com/Xython/Linq.py/blob/master/docs/general.md#enum>`__
+   -  `Map <https://github.com/Xython/Linq.py/blob/master/docs/general.md#map>`__
+   -  `Reduce <https://github.com/Xython/Linq.py/blob/master/docs/general.md#reduce>`__
+   -  `Then <https://github.com/Xython/Linq.py/blob/master/docs/general.md#then>`__
+   -  `Each <https://github.com/Xython/Linq.py/blob/master/docs/general.md#each>`__
+   -  `Aggregate <https://github.com/Xython/Linq.py/blob/master/docs/general.md#aggregate>`__
+   -  `Zip <https://github.com/Xython/Linq.py/blob/master/docs/general.md#zip>`__
+   -  `Sorted <https://github.com/Xython/Linq.py/blob/master/docs/general.md#sorted>`__
+   -  `ArgSorted <https://github.com/Xython/Linq.py/blob/master/docs/general.md#argsorted>`__
+   -  `Group <https://github.com/Xython/Linq.py/blob/master/docs/general.md#group>`__
+   -  `GroupBy <https://github.com/Xython/Linq.py/blob/master/docs/general.md#groupby>`__
+   -  `Take <https://github.com/Xython/Linq.py/blob/master/docs/general.md#take>`__
+   -  `TakeWhile <https://github.com/Xython/Linq.py/blob/master/docs/general.md#takewhile>`__
+   -  `Drop\|Skip <https://github.com/Xython/Linq.py/blob/master/docs/general.md#drop%7Cskip>`__
+   -  `Concat <https://github.com/Xython/Linq.py/blob/master/docs/general.md#concat>`__
+   -  `ToList <https://github.com/Xython/Linq.py/blob/master/docs/general.md#tolist>`__
+   -  `ToTuple <https://github.com/Xython/Linq.py/blob/master/docs/general.md#totuple>`__
+   -  `ToDict <https://github.com/Xython/Linq.py/blob/master/docs/general.md#todict>`__
+   -  `ToSet <https://github.com/Xython/Linq.py/blob/master/docs/general.md#toset>`__
+   -  `All <https://github.com/Xython/Linq.py/blob/master/docs/general.md#all>`__
+   -  `Any <https://github.com/Xython/Linq.py/blob/master/docs/general.md#any>`__
 
 -  List
 
-   -  `Extended <>`__
-   -  `Extend <>`__
-   -  `Sort <>`__
-   -  `Reversed <>`__
-   -  `Reverse <>`__
+   -  `Extended <https://github.com/Xython/Linq.py/blob/master/docs/list.md#extended>`__
+   -  `Extend <https://github.com/Xython/Linq.py/blob/master/docs/list.md#extend>`__
+   -  `Sort <https://github.com/Xython/Linq.py/blob/master/docs/list.md#sort>`__
+   -  `Reversed <https://github.com/Xython/Linq.py/blob/master/docs/list.md#reversed>`__
+   -  `Reverse <https://github.com/Xython/Linq.py/blob/master/docs/list.md#reverse>`__
 
 -  Set
 
-   -  `Intersects <>`__
-   -  `Union <>`__
+   -  `Intersects <https://github.com/Xython/Linq.py/blob/master/docs/set.md#intersects>`__
+   -  `Union <https://github.com/Xython/Linq.py/blob/master/docs/set.md#union>`__
 
 How to Contribute
 -----------------
