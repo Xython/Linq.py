@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/badge/license-MIT-yellow.svg)](https://github.com/Xython/Linq.py/blob/master/LICENSE)
 [![codecov](https://codecov.io/gh/Xython/Linq.py/branch/master/graph/badge.svg)](https://codecov.io/gh/Xython/Linq.py)
 [![Coverage Status](https://coveralls.io/repos/github/Xython/Linq.py/badge.svg?branch=master)](https://coveralls.io/github/Xython/Linq.py?branch=master)
-[![PyPI version](https://img.shields.io/pypi/v/Linq.py.svg)](https://pypi.python.org/pypi/Linq.py)
+[![PyPI version](https://img.shields.io/pypi/v/Linq.svg)](https://pypi.python.org/pypi/Linq)
 
 ## Install
 

@@ -26,7 +26,7 @@ Here is an example to get top 10 frequent pixels in a picture.
                         .Sorted(by=lambda _, v: -v)     \
                         .Take(10)                       \
                         .Map(lambda k, _: k)            \
-                        .ToList()                      \
+                        .ToList()                       \
                         .Then(np.array).Unboxed()
 
 About Linq
@@ -246,5 +246,5 @@ Feel free to pull requests here.
    :target: https://codecov.io/gh/Xython/Linq.py
 .. |Coverage Status| image:: https://coveralls.io/repos/github/Xython/Linq.py/badge.svg?branch=master
    :target: https://coveralls.io/github/Xython/Linq.py?branch=master
-.. |PyPI version| image:: https://img.shields.io/pypi/v/Linq.py.svg
-   :target: https://pypi.python.org/pypi/Linq.py
+.. |PyPI version| image:: https://img.shields.io/pypi/v/Linq.svg
+   :target: https://pypi.python.org/pypi/Linq
