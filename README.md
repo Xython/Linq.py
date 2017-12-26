@@ -27,7 +27,7 @@ def most_frequent(arr: np.ndarray) -> np.ndarray:
                     .Sorted(by=lambda _, v: -v)     \
                     .Take(10)                       \
                     .Map(lambda k, _: k)            \
-                    .ToList()                      \
+                    .ToList()                       \
                     .Then(np.array).Unboxed()
 ```
 
