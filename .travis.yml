@@ -10,7 +10,6 @@ install:
 
 script:
   - pip install EBNFParser
-  - pip uninstall cytoolz
   - python code_gen_test.py
   - py.test test.py test_manual.py --cov=linq
   - coverage run --source=linq test.py test_manual.py
