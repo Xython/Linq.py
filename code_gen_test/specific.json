@@ -14,7 +14,7 @@
   "Reduce": "Flow([1,2,3]).Reduce(lambda x, y: x+y, -1)",
   "Group": "Flow([1, 1,  2, 3, 3]).Group().Map(lambda _ : (len(_), len(_))).Group(lambda a, b: a*b).ToTuple()",
   "TakeWhile": "Flow([1, 2, 3, 4, 5, 6]).TakeWhile(lambda x: x<3).ToTuple()",
-  "TakeIf": "print(Flow([1,2,3]).TakeIf(lambda x: x%2).ToTuple())",
+  "TakeIf": "Flow([1,2,3]).TakeIf(lambda x: x%2).ToTuple()",
   "Filter": "Flow([(1, 1), (2, 2), (3, 2)]).Filter(lambda x, y: x is y).Filter().Filter(lambda x: x!=(3, 2)).All()"
 },
   "Lazy":["Group", "GroupBy", "Map", "Concat", "Take", "TakeIf", "TakeWhile", "Fliter"]
