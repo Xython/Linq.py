@@ -1,9 +1,7 @@
 # Linq.py 
-[![Build Status](https://travis-ci.org/thautwarm/Linq.py.svg?branch=master)](https://travis-ci.org/thautwarm/Linq.py)
-[![License](https://img.shields.io/badge/license-MIT-yellow.svg)](https://github.com/thautwarm/Linq.py/blob/master/LICENSE)
-[![codecov](https://codecov.io/gh/thautwarm/Linq.py/branch/master/graph/badge.svg)](https://codecov.io/gh/thautwarm/Linq.py)
-
-- PS: [Coverage Here](https://travis-ci.org/thautwarm/Linq.py/jobs/318643137).  
+[![Build Status](https://travis-ci.org/Xython/Linq.py.svg?branch=master)](https://travis-ci.org/Xython/Linq.py)
+[![License](https://img.shields.io/badge/license-MIT-yellow.svg)](https://github.com/Xython/Linq.py/blob/master/LICENSE)
+[![codecov](https://codecov.io/gh/Xython/Linq.py/branch/master/graph/badge.svg)](https://codecov.io/gh/Xython/Linq.py)
 
 ## About Linq
 
@@ -77,7 +75,7 @@ res = seq.Zip(range(100, 200)).Map(lambda fst, snd : fst/snd).GroupBy(lambda num
 ```
 
 
-## How does [Linq.py](https://github.com/thautwarm/Linq.py) work?
+## How does [Linq.py](https://github.com/Xython/Linq.py) work?
 
 There is a core class object, `linq.core.flow.Flow`, which just has one member `stream`.  
 When you want to get a specific extension method from `Flow` object,
@@ -180,10 +178,10 @@ Note: Docs haven't been finished yet.
 
 ## How to Contribute 
 
-- Design the [standard library](https://github.com/thautwarm/Linq.py/tree/master/linq/standard) for [Linq.py](https://github.com/thautwarm/Linq.py).
+- Design the [standard library](https://github.com/Xython/Linq.py/tree/master/linq/standard) for [Linq.py](https://github.com/Xython/Linq.py).
 
-- Write documents for the standard library and tutorials about how to use [Linq.py](https://github.com/thautwarm/Linq.py).  
+- Write documents for the standard library and tutorials about how to use [Linq.py](https://github.com/Xython/Linq.py).  
 
-- Join [LinqPy Room](https://gitter.im/LinqPy/Lobby) to discuss about any aspects of [Linq.py](https://github.com/thautwarm/Linq.py).
+- Join [LinqPy Room](https://gitter.im/LinqPy/Lobby) to discuss about any aspects of [Linq.py](https://github.com/Xython/Linq.py).
 
 Feel free to pull requests here.
