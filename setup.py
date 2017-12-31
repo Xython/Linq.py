@@ -5,7 +5,7 @@ with open('./README.rst', encoding='utf-8') as f:
 
 setup(
     name='Linq',
-    version='0.2',
+    version='0.3',
     keywords='Linq',
     long_description=readme,
     packages=['linq', 'linq.core', 'linq.standard'],

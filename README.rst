@@ -10,6 +10,9 @@ Install
 
     pip install -U Linq
 
+Additional: Some magic here: `Mix Linq with
+Pipe <https://github.com/Xython/Linq.py/blob/master/using_pipe.md>`__
+
 Here is an example to get top 10 frequent pixels in a picture.
 
 .. code:: python

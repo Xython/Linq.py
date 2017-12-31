@@ -1,5 +1,10 @@
 from ..core.flow import *
-from collections import Generator
+from sys import version_info
+
+if version_info.minor > 4:
+    from collections import Generator
+else:
+    from collections import Iterator as Generator
 
 src = ''
 
