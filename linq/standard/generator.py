@@ -1,9 +1,9 @@
 from ..core.flow import *
+from collections import Generator
 
-src = globals()
-__all__ = [src]
+src = ''
 
 
 @extension_class_name('generator')
-def Next(self: Flow):
-    return Flow(next(self.stream))
+def Next(self: Generator):
+    return next(self)

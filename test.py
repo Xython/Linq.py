@@ -2,10 +2,6 @@
 
 from linq import Flow
 
-def test_Unboxed():
-    Flow([(1, 2), (2, 3), (3, 2)]).Unboxed()
-test_Unboxed()
-
 def test_Sum():
     Flow([(1, 2), (2, 3), (3, 2)]).Sum(lambda x, y: x + y)
 test_Sum()

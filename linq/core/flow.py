@@ -1,5 +1,5 @@
 from collections import defaultdict
-from functools import partial
+from functools import partial, update_wrapper
 
 Extension = defaultdict(dict)
 """
@@ -13,6 +13,14 @@ Extension = defaultdict(dict)
 It is an index of extension methods 
     which tells the `Flow` object that which method can be used for specific type. 
 """
+
+
+def linq_wrap_call(func):
+    def call(self, *args, **kwargs):
+        return Flow(func(self.stream, *args, **kwargs))
+
+    update_wrapper(call, func)
+    return call
 
 
 class Flow:
@@ -36,9 +44,13 @@ class Flow:
     def __repr__(self):
         return self.__str__()
 
+    def Unboxed(self):
+        return self.stream
+
 
 def extension_std(func):
-    Extension['{}.{}'.format(object.__module__, object.__name__)][func.__name__] = func
+    Extension['{}.{}'.format(object.__module__, object.__name__)][func.__name__] = linq_wrap_call(func)
+    return func
 
 
 def extension_class(cls):
@@ -47,7 +59,7 @@ def extension_class(cls):
         Extension[name] = dict()
 
     def wrap(func):
-        Extension[name][func.__name__] = func
+        Extension[name][func.__name__] = linq_wrap_call(func)
         return func
 
     return wrap
@@ -59,7 +71,7 @@ def extension_class_name(cls_name, of_module='builtins'):
         Extension[name] = dict()
 
     def wrap(func):
-        Extension[name][func.__name__] = func
+        Extension[name][func.__name__] = linq_wrap_call(func)
         return func
 
     return wrap

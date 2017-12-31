@@ -6,11 +6,15 @@
 [![Coverage Status](https://coveralls.io/repos/github/Xython/Linq.py/badge.svg?branch=master)](https://coveralls.io/github/Xython/Linq.py?branch=master)
 [![PyPI version](https://img.shields.io/pypi/v/Linq.svg)](https://pypi.python.org/pypi/Linq)
 
+
+
+
 ## Install
 
 ```
 pip install -U Linq
 ```
+Additional: Some magic here: [Mix Linq with Pipe](https://github.com/Xython/Linq.py/blob/master/using_pipe.md)
 
 Here is an example to get top 10 frequent pixels in a picture.
 
