@@ -209,11 +209,9 @@ def Any(self: Iterable, f=None):
 
 
 def _group_by(stream, f=None):
-    res = dict()
+    res = defaultdict(list)
     if f is None:
         for each in stream:
-            if each not in res:
-                res[each] = [each]
             res[each].append(each)
         return res
 
@@ -221,11 +219,7 @@ def _group_by(stream, f=None):
         f = destruct_func(f)
 
     for each in stream:
-        group_id = f(each)
-        if group_id not in res:
-            res[group_id] = [each]
-            continue
-        res[group_id].append(each)
+        res[f(each)].append(each)
 
     return res
 
