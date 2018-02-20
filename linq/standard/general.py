@@ -54,7 +54,7 @@ def Scan(self: Iterable, f, start_elem):
 
 @extension_std
 def Reduce(self: Iterable, f, start_elem=None):
-    return reduce(f, self) if start_elem is None else reduce(f, self)
+    return reduce(f, self) if start_elem is None else reduce(f, self, start_elem)
 
 
 @extension_std
