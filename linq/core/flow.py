@@ -17,65 +17,98 @@ It is an index of extension methods
 
 def linq_wrap_call(func):
     def call(self, *args, **kwargs):
-        return Flow(func(self.stream, *args, **kwargs))
+        return Flow(func(self._, *args, **kwargs))
+
+    update_wrapper(call, func)
+    return call
+
+
+def linq_call_no_box(func):
+    def call(self, *args, **kwargs):
+        return func(self._, *args, **kwargs)
 
     update_wrapper(call, func)
     return call
 
 
 class Flow:
-    __slots__ = ['stream']
+    __slots__ = ['_']
 
     def __init__(self, sequence):
-        self.stream = sequence
+        self._ = sequence
 
     def __getattr__(self, k):
-        for cls in self.stream.__class__.__mro__:
-            namespace = Extension['{}.{}'.format(cls.__module__, cls.__name__)]
+        for cls in self._.__class__.__mro__:
+            namespace = Extension.get(cls, '')
             if k in namespace:
                 return partial(namespace[k], self)
-        raise NameError(
-            "No extension method named `{}` for {}.".format(
-                k, '{}.{}'.format(object.__module__, object.__name__)))
+
+        where = ','.join('{}.{}'.format(cls.__module__, cls.__name__) for cls in self._.__class__.__mro__)
+
+        raise NameError("No extension method named `{}` for types `{}`.".format(k, where))
 
     def __str__(self):
-        return self.stream.__str__()
+        return self._.__str__()
 
     def __repr__(self):
-        return self.__str__()
+        return self._.__repr__()
 
     def Unboxed(self):
-        return self.stream
+        return self._
 
 
 def extension_std(func):
-    Extension['{}.{}'.format(object.__module__, object.__name__)][func.__name__] = linq_wrap_call(func)
+    ext = Extension[object]
+    name = func.__name__
+    ext[name] = ext[_camel_to_underline(name)] = linq_wrap_call(func)
     return func
 
 
-def extension_class(cls):
-    name = '{}.{}'.format(cls.__module__, cls.__name__)
-    if name not in Extension:
-        Extension[name] = dict()
+def extension_std_no_box(func):
+    ext = Extension[object]
+    name = func.__name__
+    ext[name] = ext[_camel_to_underline(name)] = linq_call_no_box(func)
+    return func
+
+
+def extension_class(cls, box=True):
+    if cls not in Extension:
+        Extension[cls] = dict()
+
+    ext = Extension[cls]
 
     def wrap(func):
-        Extension[name][func.__name__] = linq_wrap_call(func)
+        name = func.__name__
+        ext[name] = ext[_camel_to_underline(name)] = linq_wrap_call(func)
         return func
 
-    return wrap
-
-
-def extension_class_name(cls_name, of_module='builtins'):
-    name = '{}.{}'.format(of_module, cls_name)
-    if name not in Extension:
-        Extension[name] = dict()
-
-    def wrap(func):
-        Extension[name][func.__name__] = linq_wrap_call(func)
+    def wrap_no_box(func):
+        name = func.__name__
+        ext[name] = ext[_camel_to_underline(name)] = linq_call_no_box(func)
         return func
 
-    return wrap
+    return wrap if box else wrap_no_box
 
 
 def unbox_if_flow(self):
-    return self.stream if isinstance(self, Flow) else self
+    return self._ if isinstance(self, Flow) else self
+
+
+def _camel_to_underline(s: str):
+    where = [i for i, e in enumerate(s) if e.isupper()]
+    where.append(len(s))
+    name = []
+    active = False
+
+    for start, end in zip(where[:-1], where[1:]):
+        if active:
+            name.append('_')
+            active = False
+
+        if end == start + 1:
+            name.append(s[start].lower())
+            active = False
+        else:
+            name.append(s[start: end].lower())
+            active = True
+    return ''.join(name)

@@ -47,7 +47,7 @@ seq1 = range(100)
 seq2 = range(100, 200)
 zipped = zip(seq1, seq2)
 mapped = map(lambda ab: ab[0] / ab[1], zipped)
-grouped = dict();
+grouped = dict()
 group_fn = lambda x: x // 0.2
 for e in mapped:
     group_id = group_fn(e)

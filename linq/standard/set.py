@@ -2,7 +2,6 @@ from ..core.flow import *
 
 src = ''
 
-
 @extension_class(set)
 def Intersects(self: set, *others):
     return set.intersection(self, *[unbox_if_flow(other) for other in others])

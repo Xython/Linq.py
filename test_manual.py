@@ -1,7 +1,7 @@
 # see the standard library to get all the extension methods.
 
 from linq.core.collections import Generator as MGenerator
-from linq import Flow, extension_class, extension_class_name
+from linq import Flow, extension_class, generator_type
 
 
 def test_other():
@@ -12,7 +12,7 @@ def test_other():
         else:
             raise StopIteration
 
-    res = Flow(MGenerator(block_lambda, 0)).Take(100).ToList()
+    res = Flow(MGenerator(block_lambda, 0)).take(100).to_list()
 
     assert res.__str__() == res.__repr__()
 
@@ -36,12 +36,11 @@ def test_example1():
     # It's a generalization of PyGenerator.
     # What's more, it can be deepcopid and serialized!
 
-
     """
     Example 1:
     """
 
-    print(seq.Take(10).Enum().Map(lambda a, b: a * b).Sum().Unboxed())
+    print(seq.take(10).enum().map(lambda a, b: a * b).sum())
     #   Support infinite sequences, parameters destruct and so on.
     #   Limited by Python's syntax grammar, parameters destruct
     # cannot be as powerful as pattern matching.
@@ -49,8 +48,7 @@ def test_example1():
     # => 285
     print('\n================\n')
 
-    print(sum([a * b for a, b in enumerate(range(10))]))
-    # => 285
+    print(sum([a * b for a, b in enumerate(range(10))]))  # => 285
 
 
 test_example1()
@@ -62,13 +60,7 @@ def test_example2():
     Example 2:
     """
 
-    # Adding Skip to provide another semantic of Drop
-    print(seq.Skip(10).Take(5).ToList().Unboxed())
-    # => [10, 11, 12, 13, 14]
-    print(seq.Take(10).Drop(5).ToList().Unboxed())
-    # => [5, 6, 7, 8, 9]
-    print(seq.Skip(5).Take(10).Drop(5).ToList().Unboxed())
-    # => [10, 11, 12, 13, 14]
+    print(seq.take(100).skip(10).drop(5).to_list())
 
 
 test_example2()
@@ -80,12 +72,11 @@ def test_example3():
     Example 3:
     """
 
-    print(seq.Take(10).Reduce(lambda x, y: x + y, 10).Unboxed())
+    print(seq.take(10).reduce(lambda x, y: x + y, 10))
     # cumulate a single result using a start value.
     # => 55
-    print(seq.Take(10).Scan(lambda x, y: x + y, 10).ToList().Unboxed())
-    # cumulate a collection of intermediate cumulative results using a start value.
-    # => [10, 11, 13, 16, 20, 25, 31, 38, 46, 55]
+    print(seq.take(10).scan(lambda x, y: x + y,
+                            10).to_list())  # cumulate a collection of intermediate cumulative results using a start value.  # => [10, 11, 13, 16, 20, 25, 31, 38, 46, 55]
 
 
 test_example3()
@@ -98,13 +89,10 @@ def test_example4():
     """
 
     print('\n================\n')
-    seq1 = seq.Take(100)
-    seq2 = seq.Take(200).Drop(100)
-    s = seq1.Zip(seq2) \
-        .Map(lambda a, b: a / b) \
-        .GroupBy(lambda x: x // 0.2) \
-        .Then(lambda x: x.items()) \
-        .Each(print)
+    seq1 = seq.take(100)
+    seq2 = seq.take(200).skip(100)
+
+    seq1.zip(seq2).map(lambda a, b: a / b).group_by(lambda x: x // 0.2).each(print)
 
     print('\n================\n')
 
@@ -138,16 +126,16 @@ def test_example5():
 
     @extension_class(dict)
     def ToTupleGenerator(self: dict):
-        return Flow(((k, v) for k, v in self.items())).ToTuple().Unboxed()
+        return Flow(((k, v) for k, v in self.items())).to_tuple()
 
     try:
-        seq.Take(10).ToTupleGenerator()
+        seq.take(10).ToTupleGenerator()
     except Exception as e:
         print(e.args)
     """
     NameError: No extension method named `ToTupleGenerator` for builtins.object.
     """
-    print(seq.Take(10).Zip(seq.Take(10)).ToDict().ToTupleGenerator())
+    print(Flow(seq.take(10).zip(seq.take(10)).to_dict()).ToTupleGenerator())
 
 
 test_example5()
@@ -155,10 +143,10 @@ test_example5()
 
 @my_test
 def test_extension_byclsname():
-    @extension_class_name('generator')
+    @extension_class(generator_type, box=False)
     def MyNext(self):
         return next(self)
 
 
 test_extension_byclsname()
-Flow((i for i in range(10))).MyNext()
+print(Flow((i for i in range(10))).my_next())

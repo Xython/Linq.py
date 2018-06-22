@@ -9,8 +9,6 @@ install:
   - pip install codecov coverage pytest-cov python_coveralls
 
 script:
-  - pip install EBNFParser
-  - python code_gen_test.py
   - py.test test.py test_manual.py --cov=linq
   - coverage run --source=linq test.py test_manual.py
   - coverage report

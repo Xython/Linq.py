@@ -2,23 +2,12 @@ from ..core.collections import ScanGenerator
 from ..core.flow import *
 from ..core.utils import *
 from functools import reduce
-from collections import Iterable
-
-from sys import version_info
-
-try:
-    from cytoolz import compose
-except (ModuleNotFoundError if version_info.minor >= 6 else ImportError):
-    def compose(*fns):
-        def call(e):
-            return reduce(lambda x, y: y(x), fns[::-1], e)
-
-        return call
+from collections import Iterable, defaultdict
 
 src = ''
 
 
-@extension_std
+@extension_std_no_box
 def Sum(self: Iterable, f=None):
     if f is None:
         return sum(self)
@@ -52,7 +41,7 @@ def Scan(self: Iterable, f, start_elem):
     return ScanGenerator(f, self, start_elem)
 
 
-@extension_std
+@extension_std_no_box
 def Reduce(self: Iterable, f, start_elem=None):
     return reduce(f, self) if start_elem is None else reduce(f, self, start_elem)
 
@@ -66,7 +55,7 @@ def Filter(self: Iterable, f=None):
     return (e for e in self if f(e))
 
 
-@extension_std
+@extension_std_no_box
 def Each(self: Iterable, f):
     if is_to_destruct(f):
         f = destruct_func(f)
@@ -75,16 +64,14 @@ def Each(self: Iterable, f):
 
 
 @extension_std
-def Aggregate(self: Iterable, *functions) -> {'functions': 'Seq<Callable> | Seq<Iterable<Callable>>'}:
+def Aggregate(self: Iterable, *functions):
     functions = map(unbox_if_flow, functions)
-    return (fn(self) for fn in
-            map(lambda f: destruct_func(f) if is_to_destruct(f) else f,
-                functions))
+    return tuple(fn(self) for fn in map(lambda f: destruct_func(f) if is_to_destruct(f) else f, functions))
 
 
 @extension_std
-def Zip(self: Iterable, *others) -> {'others': 'Seq<Seq> | Seq<Iterable<Seq>>'}:
-    return zip(self, *[unbox_if_flow(other) for other in others])
+def Zip(self: Iterable, *others):
+    return zip(self, *(unbox_if_flow(other) for other in others))
 
 
 @extension_std
@@ -97,26 +84,39 @@ def Sorted(self: Iterable, by=None):
 
 
 @extension_std
-def ArgSorted(self: Iterable, by=None):
-    if by is None:
-        return sorted(range(len(self)), key=self.__getitem__)
-    if is_to_destruct(by):
-        by = destruct_func(by)
-    return sorted(range(len(self)), key=compose(by, self.__getitem__))
+def ChunkBy(self, f=None):
+    """
+    [
+        {
+            'self': [1, 1, 3, 3, 1, 1],
+            'f': lambda x: x%2,
+            'assert': lambda ret: ret == [[1, 1], [3, 3], [1, 1]]
+         }
+    ]
+    """
+    if f is None:
+        return _chunk(self)
+    if is_to_destruct(f):
+        f = destruct_func(f)
+    return _chunk(self, f)
 
 
 @extension_std
 def Group(self, f=None):
-    """The name of this function might be not proper."""
-    if f is None:
-        return _group(self)
-    if is_to_destruct(f):
-        f = destruct_func(f)
-    return _group(self, f)
+    return (v for k, v in ChunkBy(self, f))
 
 
 @extension_std
 def GroupBy(self: Iterable, f=None):
+    """
+    [
+        {
+            'self': [1, 2, 3],
+            'f': lambda x: x%2,
+            'assert': lambda ret: ret[0] == [2] and ret[1] == [1, 3]
+         }
+    ]
+    """
     if f and is_to_destruct(f):
         f = destruct_func(f)
     return _group_by(self, f)
@@ -124,11 +124,33 @@ def GroupBy(self: Iterable, f=None):
 
 @extension_std
 def Take(self: Iterable, n):
-    return (e for _, e in zip(range(n), self))
+    """
+    [
+        {
+            'self': [1, 2, 3],
+            'n': 2,
+            'assert': lambda ret: list(ret)  == [1, 2]
+         }
+    ]
+    """
+
+    for i, e in enumerate(self):
+        if i == n:
+            break
+        yield e
 
 
 @extension_std
 def TakeIf(self: Iterable, f):
+    """
+    [
+        {
+            'self': [1, 2, 3],
+            'f': lambda e: e%2,
+            'assert': lambda ret: list(ret)  == [1, 3]
+         }
+    ]
+    """
     if is_to_destruct(f):
         f = destruct_func(f)
 
@@ -137,60 +159,120 @@ def TakeIf(self: Iterable, f):
 
 @extension_std
 def TakeWhile(self: Iterable, f):
+    """
+    [
+        {
+            'self': [1, 2, 3, 4, 5],
+            'f': lambda x: x < 4,
+            'assert': lambda ret: list(ret)  == [1, 2, 3]
+         }
+    ]
+    """
     if is_to_destruct(f):
         f = destruct_func(f)
 
-    def take():
-        for e in self:
-            if not f(e):
-                break
-            yield e
+    for e in self:
+        if not f(e):
+            break
+        yield e
 
-    return take()
+
+@extension_std_no_box
+def First(self):
+    return next(self, None)
 
 
 @extension_std
 def Drop(self: Iterable, n):
-    def drop():
-        con = (e for e in self)
-        for _ in range(n):
-            con.__next__()
-        return con
-
-    return drop()
+    """
+    [
+        {
+            'self': [1, 2, 3, 4, 5],
+            'n': 3,
+            'assert': lambda ret: list(ret) == [1, 2]
+         }
+    ]
+    """
+    con = tuple(self)
+    n = len(con) - n
+    if n <= 0:
+        yield from con
+    else:
+        for i, e in enumerate(con):
+            if i == n:
+                break
+            yield e
 
 
 @extension_std
 def Skip(self: Iterable, n):
-    return Drop(self, n)
+    """
+        [
+            {
+                'self': [1, 2, 3, 4, 5],
+                'n': 3,
+                'assert': lambda ret: list(ret) == [4, 5]
+             }
+        ]
+        """
+    con = iter(self)
+    for i, _ in enumerate(con):
+        if i == n:
+            break
+    return con
 
 
 @extension_std
-def Concat(self: Iterable, *others) -> {'others': 'Seq<Seq> | Seq<Iterable<Seq>>'}:
+def Shift(self, n):
+    """
+    [
+        {
+            'self': [1, 2, 3, 4, 5],
+            'n': 3,
+            'assert': lambda ret: list(ret) == [4, 5, 1, 2, 3]
+         }
+    ]
+    """
+    headn = tuple(Take(self, n))
+    yield from self
+    yield from headn
+
+
+@extension_std
+def Concat(self: Iterable, *others):
+    """
+    [
+        {
+            'self': [1, 2, 3],
+            ':args': [[4, 5, 6], [7, 8, 9]],
+            'assert': lambda ret: list(ret) == [1, 2, 3, 4, 5, 6, 7, 8, 9]
+         }
+    ]
+    """
     return concat_generator(self, *[unbox_if_flow(other) for other in others])
 
 
-@extension_std
+@extension_std_no_box
 def ToList(self: Iterable):
     return list(self)
 
 
-@extension_std
+@extension_std_no_box
 def ToTuple(self: Iterable):
     return tuple(self)
 
 
-@extension_std
+@extension_std_no_box
 def ToDict(self: Iterable):
     return dict(self)
 
 
-@extension_std
+@extension_std_no_box
 def ToSet(self: Iterable):
     return set(self)
 
 
-@extension_std
+@extension_std_no_box
 def All(self: Iterable, f=None):
     if f is None:
         return all(self)
@@ -199,7 +281,7 @@ def All(self: Iterable, f=None):
     return all(map(f, self))
 
 
-@extension_std
+@extension_std_no_box
 def Any(self: Iterable, f=None):
     if f is None:
         return any(self)
@@ -224,33 +306,37 @@ def _group_by(stream, f=None):
     return res
 
 
-def _group(stream, f=None):
+def _chunk(stream, f=None):
+    grouped = None
+    _append = None
+    last = None
+
     if f is None:
-        grouped = None
-        last = None
         for e in stream:
             if grouped is None:
                 grouped = [e]
+                _append = grouped.append
             elif last == e:
-                grouped.append(e)
+                _append(e)
             else:
-                yield grouped
+                yield (last, grouped)
                 grouped = [e]
+                _append = grouped.append
             last = e
         else:
-            yield grouped
+            yield (last, grouped)
     else:
-        grouped = None
-        last = None
         for _e in stream:
             e = f(_e)
             if grouped is None:
                 grouped = [_e]
+                _append = grouped.append
             elif last == e:
-                grouped.append(_e)
+                _append(_e)
             else:
-                yield grouped
+                yield (last, grouped)
                 grouped = [_e]
+                _append = grouped.append
             last = e
         else:
-            yield grouped
+            yield (last, grouped)

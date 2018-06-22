@@ -9,7 +9,7 @@ setup(
     keywords='Linq',
     long_description=readme,
     packages=['linq', 'linq.core', 'linq.standard'],
-    url='https://github.com/thautwarm/Linq.py/',
+    url='https://github.com/Xython/Linq.py',
     license='MIT',
     author='thautwarm',
     author_email='twshere@outlook.com',
