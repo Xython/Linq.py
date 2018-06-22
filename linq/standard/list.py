@@ -31,7 +31,7 @@ def Extend(self: list, *others):
     return self
 
 
-@extension_class(list)
+@_ext_list
 def Sort(self: list, by=None):
     if by and is_to_destruct(by):
         by = destruct_func(by)
@@ -50,7 +50,7 @@ def Reversed(self: list):
     return self[::-1]
 
 
-@extension_class(list)
+@_ext_list
 def ArgSorted(self: list, by=None):
     if by is None:
         return sorted(range(len(self)), key=self.__getitem__)
@@ -59,9 +59,37 @@ def ArgSorted(self: list, by=None):
     return sorted(range(len(self)), key=compose(by, self.__getitem__))
 
 
-@extension_class(list, box=False)
+@_ext_list
 def First(self: list):
     try:
         return self[0]
     except IndexError:
         return None
+
+
+@_ext_list
+def Skip(self: list, n: int):
+    return self[n:]
+
+
+@_ext_list
+def Drop(self: list, n: int):
+    return self[:-n]
+
+
+@_ext_list
+def Shift(self: list, n: int):
+    return [*self[n:], *self[:n]]
+
+
+@_ext_list
+def Concat(self: list, *others: list):
+    self = self.copy()
+    for other in others:
+        self.extend(other)
+    return self
+
+
+@_ext_list
+def ToList(self: dict):
+    return self.copy()

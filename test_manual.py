@@ -152,13 +152,15 @@ def test_extension_byclsname():
 test_extension_byclsname()
 print(Flow((i for i in range(10))).my_next())
 
+# class MyFlow(Flow):
+#
+#     @extension_class(list)
+#     def apply(self, n) -> Flow[List[int]]:
+#         return [e + n for e in self]
 
-class MyFlow(Flow):
 
-    @extension_class(list)
-    def apply(self, n) -> Flow[List[int]]:
-        return [e + n for e in self]
+print(Flow({1: 2, 3: 4}).map(lambda a, b: a + b).reduce(lambda a, b: a + b))
 
+print(Flow({1: 2, 3: 4, 5: 6}).shift(2).to_list())
 
-x = MyFlow([1, 2, 3])
-x.apply(2).each(print)
+Flow([1, 2, 3]).intersects([2, 3, 4]).then(lambda a, b: print(a * 3 + b))

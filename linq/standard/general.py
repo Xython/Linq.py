@@ -1,13 +1,14 @@
 from ..core.collections import ScanGenerator
 from ..core.flow import *
 from ..core.utils import *
+from ._helper import _chunk, _group_by
 from functools import reduce
-from collections import Iterable, defaultdict
+from collections import Iterable
 
 src = ''
 
 
-@extension_std_no_box
+@extension_std
 def Sum(self: Iterable, f=None):
     if f is None:
         return sum(self)
@@ -41,7 +42,7 @@ def Scan(self: Iterable, f, start_elem):
     return ScanGenerator(f, self, start_elem)
 
 
-@extension_std_no_box
+@extension_std
 def Reduce(self: Iterable, f, start_elem=None):
     return reduce(f, self) if start_elem is None else reduce(f, self, start_elem)
 
@@ -55,7 +56,7 @@ def Filter(self: Iterable, f=None):
     return (e for e in self if f(e))
 
 
-@extension_std_no_box
+@extension_std
 def Each(self: Iterable, f):
     if is_to_destruct(f):
         f = destruct_func(f)
@@ -177,7 +178,7 @@ def TakeWhile(self: Iterable, f):
         yield e
 
 
-@extension_std_no_box
+@extension_std
 def First(self):
     return next(self, None)
 
@@ -252,27 +253,27 @@ def Concat(self: Iterable, *others):
     return concat_generator(self, *[unbox_if_flow(other) for other in others])
 
 
-@extension_std_no_box
+@extension_std
 def ToList(self: Iterable):
     return list(self)
 
 
-@extension_std_no_box
+@extension_std
 def ToTuple(self: Iterable):
     return tuple(self)
 
 
-@extension_std_no_box
+@extension_std
 def ToDict(self: Iterable):
     return dict(self)
 
 
-@extension_std_no_box
+@extension_std
 def ToSet(self: Iterable):
     return set(self)
 
 
-@extension_std_no_box
+@extension_std
 def All(self: Iterable, f=None):
     if f is None:
         return all(self)
@@ -281,7 +282,7 @@ def All(self: Iterable, f=None):
     return all(map(f, self))
 
 
-@extension_std_no_box
+@extension_std
 def Any(self: Iterable, f=None):
     if f is None:
         return any(self)
@@ -290,53 +291,11 @@ def Any(self: Iterable, f=None):
     return any(map(f, self))
 
 
-def _group_by(stream, f=None):
-    res = defaultdict(list)
-    if f is None:
-        for each in stream:
-            res[each].append(each)
-        return res
-
-    if is_to_destruct(f):
-        f = destruct_func(f)
-
-    for each in stream:
-        res[f(each)].append(each)
-
-    return res
+@extension_std
+def Intersects(self: Iterable, *others):
+    return set.intersection(set(self), *[unbox_if_flow(other) for other in others])
 
 
-def _chunk(stream, f=None):
-    grouped = None
-    _append = None
-    last = None
-
-    if f is None:
-        for e in stream:
-            if grouped is None:
-                grouped = [e]
-                _append = grouped.append
-            elif last == e:
-                _append(e)
-            else:
-                yield (last, grouped)
-                grouped = [e]
-                _append = grouped.append
-            last = e
-        else:
-            yield (last, grouped)
-    else:
-        for _e in stream:
-            e = f(_e)
-            if grouped is None:
-                grouped = [_e]
-                _append = grouped.append
-            elif last == e:
-                _append(_e)
-            else:
-                yield (last, grouped)
-                grouped = [_e]
-                _append = grouped.append
-            last = e
-        else:
-            yield (last, grouped)
+@extension_std
+def Union(self: set, *others):
+    return set.union(set(self), *[unbox_if_flow(other) for other in others])

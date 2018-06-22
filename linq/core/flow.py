@@ -27,15 +27,7 @@ def linq_wrap_call(func):
     return call
 
 
-def linq_call_no_box(func):
-    def call(self, *args, **kwargs):
-        return func(self._, *args, **kwargs)
-
-    update_wrapper(call, func)
-    return call
-
-
-class _Source:
+class TSource:
     __slots__ = ['_']
 
     def __init__(self, sequence):
@@ -63,7 +55,7 @@ class _Source:
 
 class Flow(Generic[T]):
     def __new__(cls, seq):
-        return _Source(seq)
+        return TSource(seq)
 
 
 def extension_std(func):
@@ -73,14 +65,7 @@ def extension_std(func):
     return func
 
 
-def extension_std_no_box(func):
-    ext = Extension[object]
-    name = func.__name__
-    ext[name] = ext[_camel_to_underline(name)] = linq_call_no_box(func)
-    return func
-
-
-def extension_class(cls, box=True):
+def extension_class(cls):
     if cls not in Extension:
         Extension[cls] = dict()
 
@@ -91,16 +76,11 @@ def extension_class(cls, box=True):
         ext[name] = ext[_camel_to_underline(name)] = linq_wrap_call(func)
         return func
 
-    def wrap_no_box(func):
-        name = func.__name__
-        ext[name] = ext[_camel_to_underline(name)] = linq_call_no_box(func)
-        return func
-
-    return wrap if box else wrap_no_box
+    return wrap
 
 
 def unbox_if_flow(self):
-    return self._ if isinstance(self, _Source) else self
+    return self._ if isinstance(self, TSource) else self
 
 
 def _camel_to_underline(s: str):

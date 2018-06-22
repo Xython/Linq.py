@@ -24,15 +24,15 @@ from linq import Flow
 import numpy as np
 
 def most_frequent(arr: np.ndarray) -> np.ndarray:
-    return  Flow(arr.flatten())                     \
-                    .GroupBy(lambda _: _)           \
-                    .Then(lambda x: x.items())      \
-                    .Map(lambda k, v: (k, len(v)))  \
-                    .Sorted(by=lambda _, v: -v)     \
-                    .Take(10)                       \
-                    .Map(lambda k, _: k)            \
-                    .ToList()                       \
-                    .Then(np.array).Unboxed()
+    return  Flow(arr.flatten())                        \
+                    .group_by(None)                    \
+                    .map(lambda k, v: (k, len(v)))     \
+                    .sorted(by=lambda k, count: -count)\
+                    .take(10)                          \
+                    .map(lambda k, v: k)               \
+                    .to_list()                         \
+                    .then(np.array)
+                    ._  # unbox
 ```
 
 
@@ -66,7 +66,7 @@ seq1 = range(100)
 seq2 = range(100, 200)
 zipped = zip(seq1, seq2)
 mapped = map(lambda ab: ab[0] / ab[1], zipped)
-grouped = dict();
+grouped = dict()
 group_fn = lambda x: x // 0.2
 for e in mapped:
     group_id = group_fn(e)
@@ -104,66 +104,68 @@ Okay, it's not at fault, however, it makes me upset —— why do I have to writ
 
 from linq import Flow, extension_std
 seq = Flow(range(100))
-res = seq.Zip(range(100, 200)).Map(lambda fst, snd : fst/snd).GroupBy(lambda num: num//0.2).Unboxed()
+res = seq.zip(range(100, 200)).map(lambda fst, snd : fst/snd).group_by(lambda num: num//0.2)._
+
 ```
 
 
 ## How does [Linq.py](https://github.com/Xython/Linq.py) work?
 
-There is a core class object, `linq.core.flow.Flow`, which just has one member `stream`.  
-When you want to get a specific extension method from `Flow` object,
-the `type` of its `stream` member will be used to search whether the extension method exists.  
-In other words, extension methods are binded with the type(precisely, `{type.__module__}.{type.__name__}`).
+There is a core class object, `linq.core.flow.TSource`, which just has one member `_`.  
+When you want to get a specific extension method from `TSource` object,
+the `type` of its `_` member will be used to search whether the extension method exists.  
+In other words, extension methods are binded with the type of `_`.
 
 ```python
 
-class Flow:
-    __slots__ = ['stream']
+class TSource:
+    __slots__ = ['_']
 
     def __init__(self, sequence):
-        self.stream = sequence
+        self._ = sequence
 
     def __getattr__(self, k):
-        for cls in self.stream.__class__.__mro__:
-            namespace = Extension['{}.{}'.format(cls.__module__, cls.__name__)]
+        for cls in self._.__class__.__mro__:
+            namespace = Extension.get(cls, '')
             if k in namespace:
                 return partial(namespace[k], self)
-        raise NameError(
-            "No extension method named `{}` for {}.".format(
-                k, '{}.{}'.format(object.__module__, object.__name__)))
+
+        where = ','.join('{}.{}'.format(cls.__module__, cls.__name__) for cls in self._.__class__.__mro__)
+
+        raise NameError("No extension method named `{}` for types `{}`.".format(k, where))
 
     def __str__(self):
-        return self.stream.__str__()
+        return self._.__str__()
 
     def __repr__(self):
-        return self.__str__()
+        return self._.__repr__()
+
+
+class Flow(Generic[T]):
+    def __new__(cls, seq):
+        return TSource(seq)
+
 ```
 
 ## Extension Method
 
-Here are three methods for you to do so.  
+Here are two methods for you to do so.  
 
-- Firstly, you can use `extension_std` to add extension methods for all Flow objects.  
+- you can use `extension_std` to add extension methods for all Flow objects.  
 
-- Next, you use `extension_class(cls: type)` to add extension methods for all Flow objects whose member `stream`'s type is named `{cls.__module}.{cls.__name__}`.  
-
-- Finally, you can use `extension_class(cls_name: str,  of_module='builtins')` to add extension methods for all Flow objects whose member `stream`'s type is named is named `{of_module}.{cls_name}`.  
-
-(This way to make extension methods is for the **implicit types** in Python, each of which cannot be got except from its instances' meta member `__class__`.)
+- you use `extension_class(cls)` to add extension methods for all Flow objects whose member `_`'s type is `cls`.
 
 ```python
 
 @extension_std  # For all Flow objects
 def Add(self, i):
-    return Flow(self.stream + (i.stream if isinstance(i, Flow) else i)))
+    return self + i
 
 @extension_class(int) # Just for type `int`
-def Add(self, i):
-    return Flow(self.stream + (i.stream if isinstance(i, Flow) else i)))
+def Add(self: int, i):
+    return self + i
 
-@extension_class_name('int',  of_module=int.__module__) # Also for type `int`.
-def Add(self, i):
-    return Flow(self.stream + (i.stream if isinstance(i, Flow) else i)))
+assert Flow(4).add(2)._ is 6
 ```
 
 ## Documents of Standard Extension Methods 
@@ -172,7 +174,6 @@ Note: Docs haven't been finished yet.
 
 - General(can be used by all Flow objects)
 
-    - [Unboxed](https://github.com/Xython/Linq.py/blob/master/docs/general.md#unboxed)
     - [Sum](https://github.com/Xython/Linq.py/blob/master/docs/general.md#sum)
     - [Enum](https://github.com/Xython/Linq.py/blob/master/docs/general.md#enum)
     - [Map](https://github.com/Xython/Linq.py/blob/master/docs/general.md#map)
@@ -183,7 +184,7 @@ Note: Docs haven't been finished yet.
     - [Zip](https://github.com/Xython/Linq.py/blob/master/docs/general.md#zip)
     - [Sorted](https://github.com/Xython/Linq.py/blob/master/docs/general.md#sorted)
     - [ArgSorted](https://github.com/Xython/Linq.py/blob/master/docs/general.md#argsorted)
-    - [Group](https://github.com/Xython/Linq.py/blob/master/docs/general.md#group)
+    - [ChunkBy](https://github.com/Xython/Linq.py/blob/master/docs/general.md#chunkby)
     - [GroupBy](https://github.com/Xython/Linq.py/blob/master/docs/general.md#groupby)
     - [Take](https://github.com/Xython/Linq.py/blob/master/docs/general.md#take)
     - [TakeWhile](https://github.com/Xython/Linq.py/blob/master/docs/general.md#takewhile)

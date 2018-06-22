@@ -4,11 +4,15 @@ with open('./README.rst', encoding='utf-8') as f:
     readme = f.read()
 
 setup(
-    name='Linq',
-    version='0.3.1',
-    keywords='Linq',
+    name='linq-t',
+    version='0.1',
+    keywords='Linq, type hinting, type inference',
     long_description=readme,
     packages=['linq', 'linq.core', 'linq.standard'],
+    package_data={
+        'linq':[
+            'core/*.pyi',
+    ]},
     url='https://github.com/Xython/Linq.py',
     license='MIT',
     author='thautwarm',

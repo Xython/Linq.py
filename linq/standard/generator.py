@@ -9,6 +9,6 @@ src = ''
 _gen_cls = (i for i in (1,)).__class__
 
 
-@extension_class(_gen_cls, box=False)
-def Next(self: Generator):
-    return next(self)
+@extension_class(_gen_cls)
+def First(self: Generator):
+    return next(self, None)
