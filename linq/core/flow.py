@@ -1,6 +1,10 @@
 from collections import defaultdict
 from functools import partial, update_wrapper
 
+from typing import Generic, TypeVar
+
+T = TypeVar('T')
+
 Extension = defaultdict(dict)
 """
 `Extension` is a dictionary structured as 
@@ -31,7 +35,7 @@ def linq_call_no_box(func):
     return call
 
 
-class Flow:
+class _Source:
     __slots__ = ['_']
 
     def __init__(self, sequence):
@@ -55,6 +59,11 @@ class Flow:
 
     def Unboxed(self):
         return self._
+
+
+class Flow(Generic[T]):
+    def __new__(cls, seq):
+        return _Source(seq)
 
 
 def extension_std(func):
@@ -91,7 +100,7 @@ def extension_class(cls, box=True):
 
 
 def unbox_if_flow(self):
-    return self._ if isinstance(self, Flow) else self
+    return self._ if isinstance(self, _Source) else self
 
 
 def _camel_to_underline(s: str):

@@ -1,4 +1,5 @@
 # see the standard library to get all the extension methods.
+from typing import List
 
 from linq.core.collections import Generator as MGenerator
 from linq import Flow, extension_class, generator_type
@@ -150,3 +151,14 @@ def test_extension_byclsname():
 
 test_extension_byclsname()
 print(Flow((i for i in range(10))).my_next())
+
+
+class MyFlow(Flow):
+
+    @extension_class(list)
+    def apply(self, n) -> Flow[List[int]]:
+        return [e + n for e in self]
+
+
+x = MyFlow([1, 2, 3])
+x.apply(2).each(print)
