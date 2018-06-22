@@ -1,5 +1,6 @@
 .ipynb_checkpoints/
 .git/
+linq_t.egg-info/
 .spyproject/
 .vscode/
 .idea/
