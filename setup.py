@@ -19,7 +19,6 @@ setup(
     author_email='twshere@outlook.com',
     description='Language Integrated Query for Python',
     classifiers=[
-        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
