@@ -127,7 +127,7 @@ def test_example5():
 
     @extension_class(dict)
     def ToTupleGenerator(self: dict):
-        return Flow(((k, v) for k, v in self.items())).to_tuple()
+        return tuple((k, v) for k, v in self.items())
 
     try:
         seq.take(10).ToTupleGenerator()
@@ -136,7 +136,7 @@ def test_example5():
     """
     NameError: No extension method named `ToTupleGenerator` for builtins.object.
     """
-    print(Flow(seq.take(10).zip(seq.take(10)).to_dict()).ToTupleGenerator())
+    seq.take(10).zip(seq.take(10)).to_dict().ToTupleGenerator().then(print)
 
 
 test_example5()
@@ -144,7 +144,7 @@ test_example5()
 
 @my_test
 def test_extension_byclsname():
-    @extension_class(generator_type, box=False)
+    @extension_class(generator_type)
     def MyNext(self):
         return next(self)
 
