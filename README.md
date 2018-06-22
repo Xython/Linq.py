@@ -1,9 +1,9 @@
 # Linq.py 
 
-[![Build Status](https://travis-ci.org/Xython/Linq.py.svg?branch=master)](https://travis-ci.org/Xython/Linq.py)
-[![License](https://img.shields.io/badge/license-MIT-yellow.svg)](https://github.com/Xython/Linq.py/blob/master/LICENSE)
-[![codecov](https://codecov.io/gh/Xython/Linq.py/branch/master/graph/badge.svg)](https://codecov.io/gh/Xython/Linq.py)
-[![Coverage Status](https://coveralls.io/repos/github/Xython/Linq.py/badge.svg?branch=master)](https://coveralls.io/github/Xython/Linq.py?branch=master)
+[![Build Status](https://travis-ci.org/Xython/Linq.py.svg?branch=typed-linq)](https://travis-ci.org/Xython/Linq.py)
+[![License](https://img.shields.io/badge/license-MIT-yellow.svg)](https://github.com/Xython/Linq.py/blob/typed-linq/LICENSE)
+[![codecov](https://codecov.io/gh/Xython/Linq.py/branch/typed-linq/graph/badge.svg)](https://codecov.io/gh/Xython/Linq.py)
+[![Coverage Status](https://coveralls.io/repos/github/Xython/Linq.py/badge.svg?branch=typed-linq)](https://coveralls.io/github/Xython/Linq.py?branch=typed-linq)
 [![PyPI version](https://img.shields.io/pypi/v/Linq.svg)](https://pypi.python.org/pypi/Linq)
 
 
@@ -171,47 +171,37 @@ assert Flow(4).add(2)._ is 6
 
 Note: Docs haven't been finished yet.
 
-- General(can be used by all Flow objects)
+- Index
 
-    - [Sum](https://github.com/Xython/Linq.py/blob/master/docs/general.md#sum)
-    - [Enum](https://github.com/Xython/Linq.py/blob/master/docs/general.md#enum)
-    - [Map](https://github.com/Xython/Linq.py/blob/master/docs/general.md#map)
-    - [Reduce](https://github.com/Xython/Linq.py/blob/master/docs/general.md#reduce)
-    - [Then](https://github.com/Xython/Linq.py/blob/master/docs/general.md#then)
-    - [Each](https://github.com/Xython/Linq.py/blob/master/docs/general.md#each)
-    - [Aggregate](https://github.com/Xython/Linq.py/blob/master/docs/general.md#aggregate)
-    - [Zip](https://github.com/Xython/Linq.py/blob/master/docs/general.md#zip)
-    - [Sorted](https://github.com/Xython/Linq.py/blob/master/docs/general.md#sorted)
-    - [ArgSorted](https://github.com/Xython/Linq.py/blob/master/docs/general.md#argsorted)
-    - [ChunkBy](https://github.com/Xython/Linq.py/blob/master/docs/general.md#chunkby)
-    - [GroupBy](https://github.com/Xython/Linq.py/blob/master/docs/general.md#groupby)
-    - [Take](https://github.com/Xython/Linq.py/blob/master/docs/general.md#take)
-    - [TakeWhile](https://github.com/Xython/Linq.py/blob/master/docs/general.md#takewhile)
-    - [Drop|Skip](https://github.com/Xython/Linq.py/blob/master/docs/general.md#drop|skip)
-    - [Concat](https://github.com/Xython/Linq.py/blob/master/docs/general.md#concat)
-    - [ToList](https://github.com/Xython/Linq.py/blob/master/docs/general.md#tolist)
-    - [ToTuple](https://github.com/Xython/Linq.py/blob/master/docs/general.md#totuple)
-    - [ToDict](https://github.com/Xython/Linq.py/blob/master/docs/general.md#todict)
-    - [ToSet](https://github.com/Xython/Linq.py/blob/master/docs/general.md#toset)
-    - [All](https://github.com/Xython/Linq.py/blob/master/docs/general.md#all)
-    - [Any](https://github.com/Xython/Linq.py/blob/master/docs/general.md#any)
-
-- List
-
-    - [Extended](https://github.com/Xython/Linq.py/blob/master/docs/list.md#extended)
-    - [Extend](https://github.com/Xython/Linq.py/blob/master/docs/list.md#extend)
-    - [Sort](https://github.com/Xython/Linq.py/blob/master/docs/list.md#sort)
-    - [Reversed](https://github.com/Xython/Linq.py/blob/master/docs/list.md#reversed)
-    - [Reverse](https://github.com/Xython/Linq.py/blob/master/docs/list.md#reverse)
-    
-- Set
-
-    - [Intersects](https://github.com/Xython/Linq.py/blob/master/docs/set.md#intersects)
-    - [Union](https://github.com/Xython/Linq.py/blob/master/docs/set.md#union)
+    - [Sum](https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#sum)
+    - [Enum](https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#enum)
+    - [Map](https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#map)
+    - [Reduce](https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#reduce)
+    - [Then](https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#then)
+    - [Each](https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#each)
+    - [Aggregate](https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#aggregate)
+    - [Zip](https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#zip)
+    - [Sorted](https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#sorted)
+    - [ArgSorted](https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#argsorted)
+    - [ChunkBy](https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#chunkby)
+    - [GroupBy](https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#groupby)
+    - [Take](https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#take)
+    - [TakeWhile](https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#takewhile)
+    - [First](https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#first)
+    - [Drop|Skip](https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#drop|skip)
+    - [Concat](https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#concat)
+    - [ToList](https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#tolist)
+    - [ToTuple](https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#totuple)
+    - [ToDict](https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#todict)
+    - [ToSet](https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#toset)
+    - [All](https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#all)
+    - [Any](https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#any)
+    - [Intersects](https://github.com/Xython/Linq.py/blob/typed-linq/docs/set.md#intersects)
+    - [Union](https://github.com/Xython/Linq.py/blob/typed-linq/docs/set.md#union)
 
 ## How to Contribute 
 
-- Design the [standard library](https://github.com/Xython/Linq.py/tree/master/linq/standard) for [Linq.py](https://github.com/Xython/Linq.py).
+- Design the [standard library](https://github.com/Xython/Linq.py/tree/typed-linq/linq/standard) for [Linq.py](https://github.com/Xython/Linq.py).
 
 - Write documents for the standard library and tutorials about how to use [Linq.py](https://github.com/Xython/Linq.py).  
 
