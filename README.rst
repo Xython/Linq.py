@@ -3,15 +3,12 @@ Linq.py
 
 |Build Status| |License| |codecov| |Coverage Status| |PyPI version|
 
-Install
--------
+Install Typed-Linq
+------------------
 
 ::
 
-    pip install -U Linq
-
-Additional: Some magic here: `Mix Linq with
-Pipe <https://github.com/Xython/Linq.py/blob/master/using_pipe.md>`__
+    pip install -U linq-t
 
 Here is an example to get top 10 frequent pixels in a picture.
 
@@ -22,15 +19,15 @@ Here is an example to get top 10 frequent pixels in a picture.
     import numpy as np
 
     def most_frequent(arr: np.ndarray) -> np.ndarray:
-        return  Flow(arr.flatten())                     \
-                        .GroupBy(lambda _: _)           \
-                        .Then(lambda x: x.items())      \
-                        .Map(lambda k, v: (k, len(v)))  \
-                        .Sorted(by=lambda _, v: -v)     \
-                        .Take(10)                       \
-                        .Map(lambda k, _: k)            \
-                        .ToList()                       \
-                        .Then(np.array).Unboxed()
+        return  Flow(arr.flatten())                        \
+                        .group_by(None)                    \
+                        .map(lambda k, v: (k, len(v)))     \
+                        .sorted(by=lambda k, count: -count)\
+                        .take(10)                          \
+                        .map(lambda k, v: k)               \
+                        .to_list()                         \
+                        .then(np.array)
+                        ._  # unbox
 
 About Linq
 ----------
@@ -70,7 +67,7 @@ Awkward Scenes in Python
     seq2 = range(100, 200)
     zipped = zip(seq1, seq2)
     mapped = map(lambda ab: ab[0] / ab[1], zipped)
-    grouped = dict();
+    grouped = dict()
     group_fn = lambda x: x // 0.2
     for e in mapped:
         group_id = group_fn(e)
@@ -109,128 +106,110 @@ write these ugly codes?
 
     from linq import Flow, extension_std
     seq = Flow(range(100))
-    res = seq.Zip(range(100, 200)).Map(lambda fst, snd : fst/snd).GroupBy(lambda num: num//0.2).Unboxed()
+    res = seq.zip(range(100, 200)).map(lambda fst, snd : fst/snd).group_by(lambda num: num//0.2)._
 
 How does `Linq.py <https://github.com/Xython/Linq.py>`__ work?
 --------------------------------------------------------------
 
-| There is a core class object, ``linq.core.flow.Flow``, which just has
-  one member ``stream``.
-| When you want to get a specific extension method from ``Flow`` object,
-  the ``type`` of its ``stream`` member will be used to search whether
-  the extension method exists.
-| In other words, extension methods are binded with the type(precisely,
-  ``{type.__module__}.{type.__name__}``).
+| There is a core class object, ``linq.core.flow.TSource``, which just
+  has one member ``_``.
+| When you want to get a specific extension method from ``TSource``
+  object, the ``type`` of its ``_`` member will be used to search
+  whether the extension method exists.
+| In other words, extension methods are binded with the type of ``_``.
 
 .. code:: python
 
 
-    class Flow:
-        __slots__ = ['stream']
+    class TSource:
+        __slots__ = ['_']
 
         def __init__(self, sequence):
-            self.stream = sequence
+            self._ = sequence
 
         def __getattr__(self, k):
-            for cls in self.stream.__class__.__mro__:
-                namespace = Extension['{}.{}'.format(cls.__module__, cls.__name__)]
+            for cls in self._.__class__.__mro__:
+                namespace = Extension.get(cls, '')
                 if k in namespace:
                     return partial(namespace[k], self)
-            raise NameError(
-                "No extension method named `{}` for {}.".format(
-                    k, '{}.{}'.format(object.__module__, object.__name__)))
+
+            where = ','.join('{}.{}'.format(cls.__module__, cls.__name__) for cls in self._.__class__.__mro__)
+
+            raise NameError("No extension method named `{}` for types `{}`.".format(k, where))
 
         def __str__(self):
-            return self.stream.__str__()
+            return self._.__str__()
 
         def __repr__(self):
-            return self.__str__()
+            return self._.__repr__()
+
+
+    class Flow(Generic[T]):
+        def __new__(cls, seq):
+            return TSource(seq)
 
 Extension Method
 ----------------
 
-Here are three methods for you to do so.
+Here are two methods for you to do so.
 
--  Firstly, you can use ``extension_std`` to add extension methods for
-   all Flow objects.
+-  you can use ``extension_std`` to add extension methods for all Flow
+   objects.
 
--  Next, you use ``extension_class(cls: type)`` to add extension methods
-   for all Flow objects whose member ``stream``'s type is named
-   ``{cls.__module}.{cls.__name__}``.
-
--  Finally, you can use
-   ``extension_class(cls_name: str,  of_module='builtins')`` to add
-   extension methods for all Flow objects whose member ``stream``'s type
-   is named is named ``{of_module}.{cls_name}``.
-
-(This way to make extension methods is for the **implicit types** in
-Python, each of which cannot be got except from its instances' meta
-member ``__class__``.)
+-  you use ``extension_class(cls)`` to add extension methods for all
+   Flow objects whose member ``_``'s type is ``cls``.
 
 .. code:: python
 
 
     @extension_std  # For all Flow objects
     def Add(self, i):
-        return Flow(self.stream + (i.stream if isinstance(i, Flow) else i)))
+        return self + i
 
     @extension_class(int) # Just for type `int`
-    def Add(self, i):
-        return Flow(self.stream + (i.stream if isinstance(i, Flow) else i)))
+    def Add(self: int, i):
+        return self + i
 
-    @extension_class_name('int',  of_module=int.__module__) # Also for type `int`.
-    def Add(self, i):
-        return Flow(self.stream + (i.stream if isinstance(i, Flow) else i)))
+    assert Flow(4).add(2)._ is 6
 
 Documents of Standard Extension Methods
 ---------------------------------------
 
 Note: Docs haven't been finished yet.
 
--  General(can be used by all Flow objects)
+-  Index
 
-   -  `Unboxed <https://github.com/Xython/Linq.py/blob/master/docs/general.md#unboxed>`__
-   -  `Sum <https://github.com/Xython/Linq.py/blob/master/docs/general.md#sum>`__
-   -  `Enum <https://github.com/Xython/Linq.py/blob/master/docs/general.md#enum>`__
-   -  `Map <https://github.com/Xython/Linq.py/blob/master/docs/general.md#map>`__
-   -  `Reduce <https://github.com/Xython/Linq.py/blob/master/docs/general.md#reduce>`__
-   -  `Then <https://github.com/Xython/Linq.py/blob/master/docs/general.md#then>`__
-   -  `Each <https://github.com/Xython/Linq.py/blob/master/docs/general.md#each>`__
-   -  `Aggregate <https://github.com/Xython/Linq.py/blob/master/docs/general.md#aggregate>`__
-   -  `Zip <https://github.com/Xython/Linq.py/blob/master/docs/general.md#zip>`__
-   -  `Sorted <https://github.com/Xython/Linq.py/blob/master/docs/general.md#sorted>`__
-   -  `ArgSorted <https://github.com/Xython/Linq.py/blob/master/docs/general.md#argsorted>`__
-   -  `Group <https://github.com/Xython/Linq.py/blob/master/docs/general.md#group>`__
-   -  `GroupBy <https://github.com/Xython/Linq.py/blob/master/docs/general.md#groupby>`__
-   -  `Take <https://github.com/Xython/Linq.py/blob/master/docs/general.md#take>`__
-   -  `TakeWhile <https://github.com/Xython/Linq.py/blob/master/docs/general.md#takewhile>`__
-   -  `Drop\|Skip <https://github.com/Xython/Linq.py/blob/master/docs/general.md#drop%7Cskip>`__
-   -  `Concat <https://github.com/Xython/Linq.py/blob/master/docs/general.md#concat>`__
-   -  `ToList <https://github.com/Xython/Linq.py/blob/master/docs/general.md#tolist>`__
-   -  `ToTuple <https://github.com/Xython/Linq.py/blob/master/docs/general.md#totuple>`__
-   -  `ToDict <https://github.com/Xython/Linq.py/blob/master/docs/general.md#todict>`__
-   -  `ToSet <https://github.com/Xython/Linq.py/blob/master/docs/general.md#toset>`__
-   -  `All <https://github.com/Xython/Linq.py/blob/master/docs/general.md#all>`__
-   -  `Any <https://github.com/Xython/Linq.py/blob/master/docs/general.md#any>`__
-
--  List
-
-   -  `Extended <https://github.com/Xython/Linq.py/blob/master/docs/list.md#extended>`__
-   -  `Extend <https://github.com/Xython/Linq.py/blob/master/docs/list.md#extend>`__
-   -  `Sort <https://github.com/Xython/Linq.py/blob/master/docs/list.md#sort>`__
-   -  `Reversed <https://github.com/Xython/Linq.py/blob/master/docs/list.md#reversed>`__
-   -  `Reverse <https://github.com/Xython/Linq.py/blob/master/docs/list.md#reverse>`__
-
--  Set
-
-   -  `Intersects <https://github.com/Xython/Linq.py/blob/master/docs/set.md#intersects>`__
-   -  `Union <https://github.com/Xython/Linq.py/blob/master/docs/set.md#union>`__
+   -  `Sum <https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#sum>`__
+   -  `Enum <https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#enum>`__
+   -  `Map <https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#map>`__
+   -  `Reduce <https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#reduce>`__
+   -  `Then <https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#then>`__
+   -  `Each <https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#each>`__
+   -  `Aggregate <https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#aggregate>`__
+   -  `Zip <https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#zip>`__
+   -  `Sorted <https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#sorted>`__
+   -  `ArgSorted <https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#argsorted>`__
+   -  `ChunkBy <https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#chunkby>`__
+   -  `GroupBy <https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#groupby>`__
+   -  `Take <https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#take>`__
+   -  `TakeWhile <https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#takewhile>`__
+   -  `First <https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#first>`__
+   -  `Drop\|Skip <https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#drop%7Cskip>`__
+   -  `Concat <https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#concat>`__
+   -  `ToList <https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#tolist>`__
+   -  `ToTuple <https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#totuple>`__
+   -  `ToDict <https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#todict>`__
+   -  `ToSet <https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#toset>`__
+   -  `All <https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#all>`__
+   -  `Any <https://github.com/Xython/Linq.py/blob/typed-linq/docs/general.md#any>`__
+   -  `Intersects <https://github.com/Xython/Linq.py/blob/typed-linq/docs/set.md#intersects>`__
+   -  `Union <https://github.com/Xython/Linq.py/blob/typed-linq/docs/set.md#union>`__
 
 How to Contribute
 -----------------
 
 -  Design the `standard
-   library <https://github.com/Xython/Linq.py/tree/master/linq/standard>`__
+   library <https://github.com/Xython/Linq.py/tree/typed-linq/linq/standard>`__
    for `Linq.py <https://github.com/Xython/Linq.py>`__.
 
 -  Write documents for the standard library and tutorials about how to
@@ -241,13 +220,13 @@ How to Contribute
 
 Feel free to pull requests here.
 
-.. |Build Status| image:: https://travis-ci.org/Xython/Linq.py.svg?branch=master
+.. |Build Status| image:: https://travis-ci.org/Xython/Linq.py.svg?branch=typed-linq
    :target: https://travis-ci.org/Xython/Linq.py
 .. |License| image:: https://img.shields.io/badge/license-MIT-yellow.svg
-   :target: https://github.com/Xython/Linq.py/blob/master/LICENSE
-.. |codecov| image:: https://codecov.io/gh/Xython/Linq.py/branch/master/graph/badge.svg
+   :target: https://github.com/Xython/Linq.py/blob/typed-linq/LICENSE
+.. |codecov| image:: https://codecov.io/gh/Xython/Linq.py/branch/typed-linq/graph/badge.svg
    :target: https://codecov.io/gh/Xython/Linq.py
-.. |Coverage Status| image:: https://coveralls.io/repos/github/Xython/Linq.py/badge.svg?branch=master
-   :target: https://coveralls.io/github/Xython/Linq.py?branch=master
+.. |Coverage Status| image:: https://coveralls.io/repos/github/Xython/Linq.py/badge.svg?branch=typed-linq
+   :target: https://coveralls.io/github/Xython/Linq.py?branch=typed-linq
 .. |PyPI version| image:: https://img.shields.io/pypi/v/Linq.svg
    :target: https://pypi.python.org/pypi/Linq
