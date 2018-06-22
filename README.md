@@ -9,12 +9,11 @@
 
 
 
-## Install
+## Install Typed-Linq
 
 ```
-pip install -U Linq
+pip install -U linq-t
 ```
-Additional: Some magic here: [Mix Linq with Pipe](https://github.com/Xython/Linq.py/blob/master/using_pipe.md)
 
 Here is an example to get top 10 frequent pixels in a picture.
 
