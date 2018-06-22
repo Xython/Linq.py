@@ -81,20 +81,53 @@ Flow(['red', 'blue', 'yellow']).zip(range(3)).each(lambda a, b: print(a * b))
 # yellow
 # yellow
 ```
-
 ## Aggregate
+
+- Type: `(Flow[Iterable[T]], (T=>V)...) => Tuple[V, ...]`
+
+```python
+import numpy as np
+Flow(range(100)).aggregate(sum, max, min, np.mean)._
+# => (4950, 99, 0, 49.5)
+```
 
 ## Zip
 
+```python
+
+a, b, c = 'abc'
+x = Flow((a, b, c)).zip([b, c, a], [c, a, b])
+s = x.map(lambda _1, _2, _3: _1 + _2 + _3).to_tuple()._
+print(s)
+# => ('abc', 'bca', 'cab')
+```
+
 ## Sorted
 
+```python
+Flow([(1, 2), (2, 1)]).sorted()._
+Flow([(1, 2), (2, 1)]).sorted(lambda a, b: b)._
+# =>
+# [(1, 2), (2, 1)]
+# [(2, 1), (1, 2)]
+```
 ## ArgSorted
 
-## Group
+```python
+Flow([(1, 2), (2, 1)]).arg_sorted()._
+Flow([(1, 2), (2, 1)]).arg_sorted(lambda a, b: b)._
+# =>
+# [0, 1]
+# [1, 0]
+```
+
+## ChunkBy
 
 ## Take
 
 ## TakeWhile
+
+## First
 
 ## Drop|Skip
 
