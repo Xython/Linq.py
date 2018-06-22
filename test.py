@@ -188,7 +188,7 @@ test_Any()
 
 
 def test_Next():
-    Flow((i for i in range(3))).Next()
+    Flow((i for i in range(3))).first()
 
 
 test_Next()

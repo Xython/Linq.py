@@ -1,7 +1,21 @@
 from collections import defaultdict
 from functools import partial, update_wrapper
 
-from typing import Generic, TypeVar
+try:
+    from typing import Generic, TypeVar
+except:
+    class GenericMeta(type):
+        def __getitem__(self, item):
+            return object
+
+
+    class Generic(metaclass=GenericMeta):
+        pass
+
+
+    class TypeVar:
+        def __new__(cls, *args, **kwargs):
+            return args
 
 T = TypeVar('T')
 
