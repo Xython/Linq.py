@@ -154,7 +154,7 @@ Flow(range(20)).take_while(lambda e: e ** 2 < 12).to_list()._
 from linq.core.collections import Generator as MyGenerator
 Flow(
     MyGenerator(lambda e: e + 1, 3)
-    ).filter(
+).filter(
         lambda e: e ** 4 + e < (e // 2) ** (e // 3)
 ).first()
 # => 18
