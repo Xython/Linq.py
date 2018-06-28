@@ -15,6 +15,13 @@
 pip install -U linq-t
 ```
 
+* **Typed-Linq** = **Linq** + **Static Checking**(PyCharm performs best)
+* **Linq** = **Auto-Completion** + **Readability**
+* **Static Checking** = **Safety** + **Debugging when coding**
+
+Additionally, **static checking** helps to type inference which improves the **auto-completion**.
+
+
 Here is an example to get top 10 frequent pixels in a picture.
 
 ```python
