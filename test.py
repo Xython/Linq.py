@@ -230,14 +230,26 @@ test_Reversed()
 
 
 def test_Intersects():
-    Flow({(1, 1), (2, 2), (3, 3)}).Intersects([(1, 2), (2, 2), (3, 3)])
+    Flow({(1, 1), (2, 2), (3, 3)}).intersects([(1, 2), (2, 2), (3, 3)])
 
 
 test_Intersects()
 
 
 def test_Union():
-    Flow({(1, 1), (2, 2), (3, 3)}).Union([(1, 2), (2, 2), (3, 3)])
+    Flow({(1, 1), (2, 2), (3, 3)}).union([(1, 2), (2, 2), (3, 3)])
 
 
 test_Union()
+
+
+def test_Chunk_by():
+    assert Flow(range(20)).chunk_by(lambda e: e // 4).to_tuple().then(len)._ == 5
+
+    assert Flow([1, 1, 2, 2, 3, 3, 3]).chunk_by().map(
+            lambda group_id, group_members: (group_id, len(group_members))).then(sorted)._ == ([(1, 2), (2, 2), (3, 3)])
+
+
+test_Chunk_by()
+
+

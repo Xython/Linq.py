@@ -123,13 +123,54 @@ Flow([(1, 2), (2, 1)]).arg_sorted(lambda a, b: b)._
 
 ## ChunkBy
 
+```python
+Flow(range(20)).chunk_by(lambda e: e//5 % 3).to_list()._
+# =>
+# [(0, [0, 1, 2, 3, 4]),
+#  (1, [5, 6, 7, 8, 9]),
+#  (2, [10, 11, 12, 13, 14]),
+#  (0, [15, 16, 17, 18, 19])]
+```
+
 ## Take
+
+```python
+Flow(range(20)).take(10).to_list()._
+# =>
+# [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+```
 
 ## TakeWhile
 
+```python
+Flow(range(20)).take_while(lambda e: e ** 2 < 12).to_list()._
+# =>
+# [0, 1, 2, 3]
+```
+
 ## First
 
+```python
+from linq.core.collections import Generator as MyGenerator
+Flow(
+    MyGenerator(lambda e: e + 1, 3)
+    ).filter(
+        lambda e: e ** 4 + e < (e // 2) ** (e // 3)
+).first()
+# => 18
+```
+
 ## Drop|Skip
+
+```python
+from linq.core.collections import Generator as MyGenerator
+inf = Flow(MyGenerator(lambda e: e + 1, 0))
+inf.skip(2).first()._
+# => 3
+
+Flow([1, 2, 3]).drop(1).skip(1).to_tuple()._
+# => (2,)
+```
 
 ## Concat
 
